@@ -89,7 +89,7 @@ function App() {
           <div className="hero-copy">
             <div className="eyebrow"><span className="eyebrow-line" /> SENIOR SOFTWARE ENGINEER · 5 YEARS EXPERIENCE</div>
             <h1 id="hero-heading">Building the<br /><em>next layer</em> of<br />software<span className="period">.</span></h1>
-            <p className="hero-description">I build reliable AI systems, with a focus on LLMOps and observability for AI agents with full-stack engineering skills in React, Java Spring Boot, and Go..</p>
+            <p className="hero-description">I'm Rajat, I build reliable AI systems, with a focus on LLMOps and observability for AI agents with full-stack engineering skills in React, Java Spring Boot, and Go.</p>
             <div className="hero-actions">
               <a className="button button-dark" href="#work">Explore my work <Arrow diagonal /></a>
               <a className="text-link" href="#about">More about me <Arrow /></a>
