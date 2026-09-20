@@ -69,3 +69,31 @@
 .contact-socials .social-arrow{width:15px;height:15px;margin-left:auto;flex:none}
 @media(max-width:900px){.contact-panel{grid-template-columns:1fr}.contact-intro{min-height:355px}.contact-info{border-left:0;border-top:1px solid #405243}.contact-panel h2{margin-top:45px}}
 @media(max-width:480px){.contact{padding-top:76px;padding-bottom:78px}.contact .section-kicker{margin-bottom:24px}.contact-panel{border-radius:12px}.contact-intro,.contact-info{padding:30px}.contact-intro{min-height:330px}.contact-panel h2{font-size:51px;margin:42px 0 17px}.contact-intro>p{font-size:13px;max-width:270px}.contact-decoration{width:245px;height:245px;right:-80px;bottom:-105px}.contact-decoration svg{width:93px;height:93px}.contact-info{padding-top:34px;padding-bottom:36px}.detail-value{font-size:15px}.contact-socials{grid-template-columns:1fr 1fr}.contact-socials a{padding:13px 10px;font-size:11px;gap:7px}}
+
+/* Portrait, experience timeline, and LinkedIn */
+.portrait-core{width:310px;height:310px;padding:0;border:9px solid #d7ef62;background:#fff;overflow:hidden;box-shadow:0 28px 65px #43523638}
+.portrait-core img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.experience{padding-top:108px;padding-bottom:118px;border-top:1px solid #e6e8e0}
+.experience-layout{display:grid;grid-template-columns:.9fr 1fr;gap:12%;margin-top:40px}
+.experience-intro h2{font-size:clamp(43px,5vw,70px);line-height:1.1;letter-spacing:-.07em;font-weight:600;margin:0 0 24px}
+.experience-intro h2 em{font-family:Georgia,serif;font-weight:400;color:#91a868}
+.experience-intro p{font-size:16px;line-height:1.7;color:#687167;max-width:410px;margin:0}
+.experience-timeline{border-left:1px solid #dce3d3;padding-left:0}
+.experience-item{position:relative;padding:0 0 34px 40px}
+.experience-item:last-child{padding-bottom:0}
+.experience-node{position:absolute;left:-6px;top:3px;width:11px;height:11px;border-radius:50%;background:#9db748;border:3px solid #f8f8f5;box-shadow:0 0 0 1px #a9bf79}
+.experience-item:last-child .experience-node{background:#cbd7ba;box-shadow:0 0 0 1px #ccd8c4}
+.experience-topline{display:flex;justify-content:space-between;gap:20px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.09em;color:#81916d}
+.experience-topline span:last-child{color:#a2ab9b}
+.experience-item h3{font-size:clamp(35px,3.5vw,48px);line-height:1.1;letter-spacing:-.055em;font-weight:600;margin:14px 0 5px}
+.experience-role{font-size:16px;font-weight:700;margin:0 0 10px}
+.experience-note{font-size:14px;line-height:1.6;color:#697367;max-width:430px;margin:0}
+.experience-item+ .experience-item{border-top:1px solid #e5e9e0;padding-top:29px}
+.experience-item+ .experience-item .experience-node{top:32px}
+.contact-socials{grid-template-columns:repeat(3,minmax(0,1fr))}
+.contact-socials a{padding:15px 10px;gap:7px;font-size:11px}
+.contact-socials a>svg:first-child{width:16px;height:16px}
+.contact-socials .social-arrow{width:13px;height:13px}
+@media(max-width:1000px){.experience-layout{gap:7%}}
+@media(max-width:760px){.experience{padding-top:75px;padding-bottom:80px}.experience-layout{grid-template-columns:1fr;gap:42px}.experience-intro h2{font-size:clamp(42px,8vw,58px)}.experience-timeline{margin-left:6px}}
+@media(max-width:480px){.experience-intro p{font-size:15px}.experience-item{padding-left:26px}.experience-item h3{font-size:37px}.contact-socials{grid-template-columns:1fr}.contact-socials a{padding:13px 14px;font-size:12px;gap:10px}.contact-socials a>svg:first-child{width:17px;height:17px}}

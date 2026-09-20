@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { FaGithub, FaXTwitter } from 'react-icons/fa6'
+import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuCodeXml, LuMail, LuMenu, LuPanelsTopLeft, LuPhone, LuServer, LuSparkles, LuX } from 'react-icons/lu'
 import './styles.css'
 
@@ -77,6 +77,7 @@ function App() {
         <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <LuX /> : <LuMenu />}</button>
         <nav className={menuOpen ? 'nav-links open' : 'nav-links'} aria-label="Main navigation">
           <a href="#about" onClick={closeMenu}>About</a>
+          <a href="#experience" onClick={closeMenu}>Experience</a>
           <a href="#expertise" onClick={closeMenu}>Expertise</a>
           <a href="#work" onClick={closeMenu}>Work</a>
           <a className="nav-contact" href="#contact" onClick={closeMenu}>Let's connect <Arrow diagonal /></a>
@@ -88,20 +89,20 @@ function App() {
           <div className="hero-copy">
             <div className="eyebrow"><span className="eyebrow-line" /> SENIOR SOFTWARE ENGINEER · 5 YEARS EXPERIENCE</div>
             <h1 id="hero-heading">Building the<br /><em>next layer</em> of<br />software<span className="period">.</span></h1>
-            <p className="hero-description">I’m Rajat, a senior engineer working across robust full-stack systems and the emerging world of agentic AI. I turn complex ideas into products people can actually use.</p>
+            <p className="hero-description">I’m Rajat, a Senior Software Engineer at Microsoft and formerly at Flipkart. I build across the full stack and explore what’s possible with agentic AI.</p>
             <div className="hero-actions">
               <a className="button button-dark" href="#work">Explore my work <Arrow diagonal /></a>
               <a className="text-link" href="#about">More about me <Arrow /></a>
             </div>
           </div>
-          <div className="hero-art" aria-hidden="true">
-            <div className="hero-orbit orbit-outer" /><div className="hero-orbit orbit-inner" />
-            <div className="orbit-label label-top">01 / ENGINEER</div>
-            <div className="orbit-label label-right">BUILD • SHIP • ITERATE</div>
-            <div className="hero-core"><span className="core-symbol">✳</span><span className="core-mini-dot dot-one" /><span className="core-mini-dot dot-two" /><span className="core-mini-dot dot-three" /></div>
-            <div className="floating-card card-code"><span className="floating-icon"><LuCodeXml /></span><span>FULL-STACK<br /><b>ENGINEERING</b></span></div>
-            <div className="floating-card card-ai"><span className="floating-icon"><LuSparkles /></span><span>AGENTIC AI<br /><b>& LLMOPS</b></span></div>
-            <span className="orbit-spark spark-one">✳</span><span className="orbit-spark spark-two">✦</span>
+          <div className="hero-art" role="img" aria-label="Portrait of Rajat Varma surrounded by full-stack engineering and agentic AI motifs">
+            <div className="hero-orbit orbit-outer" aria-hidden="true" /><div className="hero-orbit orbit-inner" aria-hidden="true" />
+            <div className="orbit-label label-top" aria-hidden="true">01 / ENGINEER</div>
+            <div className="orbit-label label-right" aria-hidden="true">BUILD • SHIP • ITERATE</div>
+            <div className="hero-core portrait-core"><img src="/images/ppf.png" alt="" fetchPriority="high" /></div>
+            <div className="floating-card card-code" aria-hidden="true"><span className="floating-icon"><LuCodeXml /></span><span>FULL-STACK<br /><b>ENGINEERING</b></span></div>
+            <div className="floating-card card-ai" aria-hidden="true"><span className="floating-icon"><LuSparkles /></span><span>AGENTIC AI<br /><b>& LLMOPS</b></span></div>
+            <span className="orbit-spark spark-one" aria-hidden="true">✳</span><span className="orbit-spark spark-two" aria-hidden="true">✦</span>
           </div>
           <div className="hero-footer"><span>BASED IN INDIA · BUILDING FOR EVERYWHERE</span><span>SCROLL TO EXPLORE ↓</span></div>
         </section>
@@ -111,8 +112,19 @@ function App() {
           <div className="intro-content"><h2>I work where <span>solid engineering</span> meets new possibilities.</h2><div><p>For five years, I’ve built software across the stack, from responsive React interfaces to reliable services in Java, Spring Boot, and Go.</p><p>Today, I’m especially focused on agentic AI: building useful agent experiences and the LLMOps and observability foundations that make them easier to understand, operate, and improve.</p><a className="underlined-link" href={github} target="_blank" rel="noreferrer">Find me on GitHub <Arrow diagonal /></a></div></div>
         </section>
 
+        <section id="experience" className="experience section-shell" aria-labelledby="experience-heading">
+          <div className="section-kicker"><span className="kicker-number">02</span><span>EXPERIENCE</span></div>
+          <div className="experience-layout">
+            <div className="experience-intro"><h2 id="experience-heading">Where I’ve<br /><em>built & grown.</em></h2><p>Five years of engineering experience across product interfaces, backend services, and the systems behind them.</p></div>
+            <div className="experience-timeline">
+              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>CURRENT</span><span>01 / 02</span></div><h3>Microsoft<span className="period">.</span></h3><p className="experience-role">Senior Software Engineer</p><p className="experience-note">Working on complex software problems with a focus on clear, dependable engineering.</p></article>
+              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>PREVIOUS</span><span>02 / 02</span></div><h3>Flipkart<span className="period">.</span></h3><p className="experience-role">Engineering</p><p className="experience-note">Earlier experience building software in a product-led environment.</p></article>
+            </div>
+          </div>
+        </section>
+
         <section id="expertise" className="expertise section-shell">
-          <div className="section-kicker"><span className="kicker-number">02</span><span>WHAT I DO</span></div>
+          <div className="section-kicker"><span className="kicker-number">03</span><span>WHAT I DO</span></div>
           <div className="section-heading-row"><h2>My toolkit<span className="period">.</span></h2><p>From product interfaces to the systems and intelligence behind them.</p></div>
           <div className="expertise-grid">
             <article className="expertise-card"><span className="card-index">01 / INTERFACE</span><span className="skill-symbol"><LuPanelsTopLeft /></span><h3>Frontend<br />engineering</h3><p>Thoughtful, responsive interfaces with React that make complex workflows feel clear.</p><div className="skill-tags"><span>React</span><span>UI architecture</span><span>Product UX</span></div></article>
@@ -122,7 +134,7 @@ function App() {
         </section>
 
         <section id="work" className="work section-shell">
-          <div className="section-kicker"><span className="kicker-number">03</span><span>SELECTED WORK</span></div>
+          <div className="section-kicker"><span className="kicker-number">04</span><span>SELECTED WORK</span></div>
           <div className="section-heading-row"><h2>Featured project<span className="period">.</span></h2><p>A closer look at something I’ve built.</p></div>
           <article className="project-card">
             <ProjectVisual />
@@ -130,10 +142,10 @@ function App() {
           </article>
         </section>
 
-        <section className="principles section-shell" aria-labelledby="principles-heading"><div className="section-kicker"><span className="kicker-number">04</span><span>HOW I THINK</span></div><div className="principles-layout"><h2 id="principles-heading">Curious by nature.<br /><em>Practical</em> by design.</h2><div className="principles-list"><div><span>01</span><p>Start with the problem, then find the simplest useful solution.</p></div><div><span>02</span><p>Build for clarity, from the interface to the underlying architecture.</p></div><div><span>03</span><p>Make systems observable so they can be trusted and improved.</p></div></div></div></section>
+        <section className="principles section-shell" aria-labelledby="principles-heading"><div className="section-kicker"><span className="kicker-number">05</span><span>HOW I THINK</span></div><div className="principles-layout"><h2 id="principles-heading">Curious by nature.<br /><em>Practical</em> by design.</h2><div className="principles-list"><div><span>01</span><p>Start with the problem, then find the simplest useful solution.</p></div><div><span>02</span><p>Build for clarity, from the interface to the underlying architecture.</p></div><div><span>03</span><p>Make systems observable so they can be trusted and improved.</p></div></div></div></section>
 
         <section id="contact" className="contact section-shell" aria-labelledby="contact-heading">
-          <div className="section-kicker"><span className="kicker-number">05</span><span>LET'S CONNECT</span></div>
+          <div className="section-kicker"><span className="kicker-number">06</span><span>LET'S CONNECT</span></div>
           <div className="contact-panel">
             <div className="contact-intro">
               <span className="contact-availability"><span /> OPEN TO CONVERSATION</span>
@@ -149,6 +161,7 @@ function App() {
               <div className="contact-socials">
                 <a href={github} target="_blank" rel="noreferrer" aria-label="GitHub profile"><FaGithub /><span>GitHub</span><LuArrowUpRight className="social-arrow" /></a>
                 <a href="https://x.com/rajat_2709" target="_blank" rel="noreferrer" aria-label="X profile"><FaXTwitter /><span>X / Twitter</span><LuArrowUpRight className="social-arrow" /></a>
+                <a href="https://www.linkedin.com/in/rajat-v-2bbb693b1/" target="_blank" rel="noreferrer" aria-label="LinkedIn profile"><FaLinkedinIn /><span>LinkedIn</span><LuArrowUpRight className="social-arrow" /></a>
               </div>
             </div>
           </div>
