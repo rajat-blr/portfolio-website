@@ -89,7 +89,7 @@ function App() {
           <div className="hero-copy">
             <div className="eyebrow"><span className="eyebrow-line" /> SENIOR SOFTWARE ENGINEER · 5 YEARS EXPERIENCE</div>
             <h1 id="hero-heading">Building the<br /><em>next layer</em> of<br />software<span className="period">.</span></h1>
-            <p className="hero-description">I’m Rajat, a Senior Software Engineer at Microsoft and formerly at Flipkart. I build across the full stack and explore what’s possible with agentic AI.</p>
+            <p className="hero-description">I build reliable AI systems, with a focus on LLMOps and observability for AI agents with full-stack engineering skills in React, Java Spring Boot, and Go..</p>
             <div className="hero-actions">
               <a className="button button-dark" href="#work">Explore my work <Arrow diagonal /></a>
               <a className="text-link" href="#about">More about me <Arrow /></a>
@@ -117,8 +117,8 @@ function App() {
           <div className="experience-layout">
             <div className="experience-intro"><h2 id="experience-heading">Where I’ve<br /><em>built & grown.</em></h2><p>Five years of engineering experience across product interfaces, backend services, and the systems behind them.</p></div>
             <div className="experience-timeline">
-              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>CURRENT</span><span>01 / 02</span></div><h3>Microsoft<span className="period">.</span></h3><p className="experience-role">Senior Software Engineer</p><p className="experience-note">Working on complex software problems with a focus on clear, dependable engineering.</p></article>
-              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>PREVIOUS</span><span>02 / 02</span></div><h3>Flipkart<span className="period">.</span></h3><p className="experience-role">Engineering</p><p className="experience-note">Earlier experience building software in a product-led environment.</p></article>
+              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>CURRENT</span><span>01 / 02</span></div><h3>Microsoft<span className="period">.</span></h3><p className="experience-role">Senior Software Engineer</p><p className="experience-note"> Leading the design and delivery of high performance backend systems that improve the performance and efficiency of AI agents.</p></article>
+              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>PREVIOUS</span><span>02 / 02</span></div><h3>Flipkart<span className="period">.</span></h3><p className="experience-role">SDE 2</p><p className="experience-note"> Improved performance during Big Billion Days, built a RAG pipeline for data observability, and optimized a payments microservice serving millions.</p></article>
             </div>
           </div>
         </section>
