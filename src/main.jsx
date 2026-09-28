@@ -5,11 +5,22 @@ import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuCodeXml, LuMail, Lu
 import './styles.css'
 
 const github = 'https://github.com/rajat-blr'
-const project = `${github}/agent-workbench`
-const screenshots = [
+const agentWorkbenchProject = `${github}/agent-workbench`
+const incidentLabProject = `${github}/incidentlab`
+const agentWorkbenchScreenshots = [
   { src: '/images/Screenshot 2026-09-20 at 1.02.42 PM.png', label: 'Workspace & agent runs', alt: 'Agent Workbench workspace showing a Codex conversation and session controls' },
   { src: '/images/Screenshot 2026-09-20 at 1.02.55 PM.png', label: 'Interactive codebase map', alt: 'Agent Workbench codebase map showing components and their relationships' },
   { src: '/images/Screenshot 2026-09-20 at 1.03.03 PM.png', label: 'Per-run change review', alt: 'Agent Workbench change review showing a readable code diff' },
+]
+const incidentLabScreenshots = [
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 10.59.19 AM.png', label: 'Incident run dashboard', alt: 'IncidentLab dashboard listing incident investigations and their current status' },
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.00.10 AM.png', label: 'Investigation overview', alt: 'IncidentLab investigation overview with workflow progress, conclusion, and run facts' },
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.00.31 AM.png', label: 'Evidence review', alt: 'IncidentLab evidence review showing attributable telemetry and repository evidence' },
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.01.13 AM.png', label: 'Evidence-linked diagnosis', alt: 'IncidentLab diagnosis view showing hypotheses connected to supporting evidence' },
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.01.24 AM.png', label: 'Ranked hypotheses', alt: 'IncidentLab diagnosis view showing ranked hypotheses and confidence levels' },
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.02.33 AM.png', label: 'Policy-checked repair', alt: 'IncidentLab repair view showing an accepted candidate and a safe unified diff' },
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.02.46 AM.png', label: 'Sandbox verification', alt: 'IncidentLab verification view showing all mandatory repair checks passing' },
+  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.03.01 AM.png', label: 'Immutable audit trail', alt: 'IncidentLab audit view showing the immutable history of an investigation run' },
 ]
 
 function Arrow({ diagonal = false }) {
@@ -20,7 +31,7 @@ function Wordmark() {
   return <span className="wordmark">RAJAT <span>VARMA<span className="wordmark-dot">.</span></span></span>
 }
 
-function ProjectVisual() {
+function ProjectVisual({ screenshots, projectName }) {
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
 
@@ -38,7 +49,7 @@ function ProjectVisual() {
       className="project-visual"
       role="region"
       aria-roledescription="carousel"
-      aria-label="Agent Workbench screenshots"
+      aria-label={`${projectName} screenshots`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -135,11 +146,17 @@ function App() {
 
         <section id="work" className="work section-shell">
           <div className="section-kicker"><span className="kicker-number">04</span><span>SELECTED WORK</span></div>
-          <div className="section-heading-row"><h2>Featured project<span className="period">.</span></h2><p>A closer look at something I’ve built.</p></div>
-          <article className="project-card">
-            <ProjectVisual />
-            <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Agent<br />Workbench<span>.</span></h3><p className="project-lead">A local-first desktop workspace for working with Codex inside your own codebase.</p><p>Open a project, keep conversations organized, explore an interactive codebase map, and review each run’s changes in one place. Built with an Electron and React interface, a local FastAPI backend, and SQLite persistence.</p><div className="project-tags"><span>Electron</span><span>React</span><span>FastAPI</span><span>SQLite</span><span>Codex CLI</span></div><a className="button button-lime" href={project} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div>
-          </article>
+          <div className="section-heading-row"><h2>Featured projects<span className="period">.</span></h2><p>A closer look at some things I’ve built.</p></div>
+          <div className="project-list">
+            <article className="project-card">
+              <ProjectVisual screenshots={incidentLabScreenshots} projectName="IncidentLab" />
+              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Incident<br />Lab<span>.</span></h3><p className="project-lead">An evidence-backed lab for diagnosing incidents and safely verifying AI-generated repairs.</p><p>Reproduce deterministic failures, collect attributable telemetry, build cited root-cause hypotheses, and keep a human approval gate before repair. Every candidate is policy-checked and verified in an isolated sandbox with a durable audit trail.</p><div className="project-tags"><span>React</span><span>TypeScript</span><span>FastAPI</span><span>Temporal</span><span>OpenTelemetry</span><span>Docker</span></div><a className="button button-lime" href={incidentLabProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div>
+            </article>
+            <article className="project-card">
+              <ProjectVisual screenshots={agentWorkbenchScreenshots} projectName="Agent Workbench" />
+              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Agent<br />Workbench<span>.</span></h3><p className="project-lead">A local-first desktop workspace for working with Codex inside your own codebase.</p><p>Open a project, keep conversations organized, explore an interactive codebase map, and review each run’s changes in one place. Built with an Electron and React interface, a local FastAPI backend, and SQLite persistence.</p><div className="project-tags"><span>Electron</span><span>React</span><span>FastAPI</span><span>SQLite</span><span>Codex CLI</span></div><a className="button button-lime" href={agentWorkbenchProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div>
+            </article>
+          </div>
         </section>
 
         <section className="principles section-shell" aria-labelledby="principles-heading"><div className="section-kicker"><span className="kicker-number">05</span><span>HOW I THINK</span></div><div className="principles-layout"><h2 id="principles-heading">Curious by nature.<br /><em>Practical</em> by design.</h2><div className="principles-list"><div><span>01</span><p>Start with the problem, then find the simplest useful solution.</p></div><div><span>02</span><p>Build for clarity, from the interface to the underlying architecture.</p></div><div><span>03</span><p>Make systems observable so they can be trusted and improved.</p></div></div></div></section>
