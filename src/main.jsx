@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuCodeXml, LuMail, LuMenu, LuPanelsTopLeft, LuPhone, LuServer, LuSparkles, LuX } from 'react-icons/lu'
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuCodeXml, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuSparkles, LuX } from 'react-icons/lu'
 import './styles.css'
 
 const github = 'https://github.com/rajat-blr'
@@ -173,7 +173,6 @@ function App() {
             <div className="contact-info">
               <p className="contact-label">DIRECT DETAILS</p>
               <div className="contact-detail"><span className="contact-icon"><LuMail /></span><div><span className="detail-label">EMAIL</span><span className="detail-value">vrajatlink@gmail.com</span></div></div>
-              <div className="contact-detail"><span className="contact-icon"><LuPhone /></span><div><span className="detail-label">PHONE</span><span className="detail-value">+91-7507975485</span></div></div>
               <p className="contact-label social-label">FIND ME ONLINE</p>
               <div className="contact-socials">
                 <a href={github} target="_blank" rel="noreferrer" aria-label="GitHub profile"><FaGithub /><span>GitHub</span><LuArrowUpRight className="social-arrow" /></a>
