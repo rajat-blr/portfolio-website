@@ -12,12 +12,14 @@ npm run dev
 ## Build
 
 ```sh
-npm run build
+SITE_URL=https://your-domain.example npm run build
 ```
+
+The build pre-renders the React homepage into `dist/index.html`, so its content is available to crawlers without JavaScript. `SITE_URL` is used for canonical, Open Graph, robots, and sitemap URLs. On Vercel it falls back to the production URL exposed by Vercel's system environment variables, so an explicit value is only needed when using a custom domain or building elsewhere.
 
 ## Deploy on Vercel
 
-Import this folder as a Vercel project. Vercel should detect Vite automatically. The build command is `npm run build` and the output directory is `dist`. No environment variables are required.
+Import this folder as a Vercel project. Vercel should detect Vite automatically. The build command is `npm run build` and the output directory is `dist`. Set `SITE_URL` to the canonical public URL when using a custom domain.
 
 ## Project media
 

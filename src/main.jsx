@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { createRoot } from 'react-dom/client'
+import { useEffect, useState } from 'react'
+import { hydrateRoot } from 'react-dom/client'
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuCodeXml, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuSparkles, LuX } from 'react-icons/lu'
 import './styles.css'
@@ -79,7 +79,7 @@ function ProjectVisual({ screenshots, projectName }) {
   )
 }
 
-function App() {
+export function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const closeMenu = () => setMenuOpen(false)
 
@@ -191,4 +191,6 @@ function App() {
   )
 }
 
-createRoot(document.getElementById('root')).render(<App />)
+if (typeof document !== 'undefined') {
+  hydrateRoot(document.getElementById('root'), <App />)
+}
