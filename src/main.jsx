@@ -6,6 +6,7 @@ import './styles.css'
 
 const github = 'https://github.com/rajat-blr'
 const agentWorkbenchProject = `${github}/agent-workbench`
+const agentWorkbenchPreview = 'https://agent-workbench-tau.vercel.app/'
 const incidentLabProject = `${github}/incidentlab`
 const incidentLabPreview = 'https://incidentlab-flax.vercel.app/'
 const agentWorkbenchScreenshots = [
@@ -155,7 +156,7 @@ function App() {
             </article>
             <article className="project-card">
               <ProjectVisual screenshots={agentWorkbenchScreenshots} projectName="Agent Workbench" />
-              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Agent<br />Workbench<span>.</span></h3><p className="project-lead">A local-first desktop workspace for working with Codex inside your own codebase.</p><p>Open a project, keep conversations organized, explore an interactive codebase map, and review each run’s changes in one place. Built with an Electron and React interface, a local FastAPI backend, and SQLite persistence.</p><div className="project-tags"><span>Electron</span><span>React</span><span>FastAPI</span><span>SQLite</span><span>Codex CLI</span></div><a className="button button-lime" href={agentWorkbenchProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div>
+              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Agent<br />Workbench<span>.</span></h3><p className="project-lead">A local-first desktop workspace for working with Codex inside your own codebase.</p><p>Open a project, keep conversations organized, explore an interactive codebase map, and review each run’s changes in one place. Built with an Electron and React interface, a local FastAPI backend, and SQLite persistence.</p><div className="project-tags"><span>Electron</span><span>React</span><span>FastAPI</span><span>SQLite</span><span>Codex CLI</span></div><div className="project-actions"><a className="button button-lime" href={agentWorkbenchPreview} target="_blank" rel="noreferrer">Live preview <Arrow diagonal /></a><a className="underlined-link" href={agentWorkbenchProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div></div>
             </article>
           </div>
         </section>
