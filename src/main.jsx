@@ -7,6 +7,7 @@ import './styles.css'
 const github = 'https://github.com/rajat-blr'
 const agentWorkbenchProject = `${github}/agent-workbench`
 const incidentLabProject = `${github}/incidentlab`
+const incidentLabPreview = 'https://incidentlab-flax.vercel.app/'
 const agentWorkbenchScreenshots = [
   { src: '/images/Screenshot 2026-09-20 at 1.02.42 PM.png', label: 'Workspace & agent runs', alt: 'Agent Workbench workspace showing a Codex conversation and session controls' },
   { src: '/images/Screenshot 2026-09-20 at 1.02.55 PM.png', label: 'Interactive codebase map', alt: 'Agent Workbench codebase map showing components and their relationships' },
@@ -150,7 +151,7 @@ function App() {
           <div className="project-list">
             <article className="project-card">
               <ProjectVisual screenshots={incidentLabScreenshots} projectName="IncidentLab" />
-              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Incident<br />Lab<span>.</span></h3><p className="project-lead">An evidence-backed lab for diagnosing incidents and safely verifying AI-generated repairs.</p><p>Reproduce deterministic failures, collect attributable telemetry, build cited root-cause hypotheses, and keep a human approval gate before repair. Every candidate is policy-checked and verified in an isolated sandbox with a durable audit trail.</p><div className="project-tags"><span>React</span><span>TypeScript</span><span>FastAPI</span><span>Temporal</span><span>OpenTelemetry</span><span>Docker</span></div><a className="button button-lime" href={incidentLabProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div>
+              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Incident<br />Lab<span>.</span></h3><p className="project-lead">An evidence-backed lab for diagnosing incidents and safely verifying AI-generated repairs.</p><p>Reproduce deterministic failures, collect attributable telemetry, build cited root-cause hypotheses, and keep a human approval gate before repair. Every candidate is policy-checked and verified in an isolated sandbox with a durable audit trail.</p><div className="project-tags"><span>React</span><span>TypeScript</span><span>FastAPI</span><span>Temporal</span><span>OpenTelemetry</span><span>Docker</span></div><div className="project-actions"><a className="button button-lime" href={incidentLabPreview} target="_blank" rel="noreferrer">Live preview <Arrow diagonal /></a><a className="underlined-link" href={incidentLabProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div></div>
             </article>
             <article className="project-card">
               <ProjectVisual screenshots={agentWorkbenchScreenshots} projectName="Agent Workbench" />
