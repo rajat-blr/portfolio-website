@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#222b24"/>
+  <circle cx="1015" cy="108" r="245" fill="#303d2f"/>
+  <circle cx="1015" cy="108" r="170" fill="none" stroke="#d7ef62" stroke-width="2" stroke-dasharray="8 11" opacity=".45"/>
+  <path d="M84 98h115" stroke="#d7ef62" stroke-width="5"/>
+  <text x="84" y="155" fill="#b9c9ae" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="4">RAJAT VARMA · SENIOR SOFTWARE ENGINEER</text>
+  <text x="78" y="308" fill="#f7f8f3" font-family="Arial, sans-serif" font-size="78" font-weight="700" letter-spacing="-5">Reliable AI &amp;</text>
+  <text x="78" y="400" fill="#d7ef62" font-family="Georgia, serif" font-size="88" font-style="italic">backend systems.</text>
+  <text x="84" y="505" fill="#b9c9ae" font-family="Arial, sans-serif" font-size="27">Agent infrastructure · Observability · Developer tooling</text>
+  <text x="84" y="566" fill="#f7f8f3" font-family="Arial, sans-serif" font-size="21" font-weight="700">MICROSOFT · PREVIOUSLY FLIPKART</text>
+</svg>

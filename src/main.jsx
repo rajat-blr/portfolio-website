@@ -1,196 +1,112 @@
 import { useEffect, useState } from 'react'
-import { hydrateRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
+import { inject, track as sendAnalyticsEvent } from '@vercel/analytics'
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuCodeXml, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuSparkles, LuX } from 'react-icons/lu'
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuSparkles, LuX } from 'react-icons/lu'
 import './styles.css'
 
-const github = 'https://github.com/rajat-blr'
-const agentWorkbenchProject = `${github}/agent-workbench`
-const agentWorkbenchPreview = 'https://agent-workbench-tau.vercel.app/'
-const incidentLabProject = `${github}/incidentlab`
-const incidentLabPreview = 'https://incidentlab-flax.vercel.app/'
-const agentWorkbenchScreenshots = [
-  { src: '/images/Screenshot 2026-09-20 at 1.02.42 PM.png', label: 'Workspace & agent runs', alt: 'Agent Workbench workspace showing a Codex conversation and session controls' },
-  { src: '/images/Screenshot 2026-09-20 at 1.02.55 PM.png', label: 'Interactive codebase map', alt: 'Agent Workbench codebase map showing components and their relationships' },
-  { src: '/images/Screenshot 2026-09-20 at 1.03.03 PM.png', label: 'Per-run change review', alt: 'Agent Workbench change review showing a readable code diff' },
+const GITHUB = 'https://github.com/rajat-blr'
+const LINKEDIN = 'https://www.linkedin.com/in/rajatvarma2709'
+const TWITTER = 'https://x.com/rajat_2709'
+const EMAIL = 'vrajatlink@gmail.com'
+const projectData = {
+  incidentlab: { name: 'IncidentLab', repo: `${GITHUB}/incidentlab`, demo: 'https://incidentlab-flax.vercel.app/runs', path: '/work/incidentlab/', status: 'Educational / experimental', release: 'v0.2.0', platforms: 'Browser demo · Docker locally', licence: 'Not declared', updated: '30 Sep 2026' },
+  workbench: { name: 'Agent Workbench', repo: `${GITHUB}/agent-workbench`, demo: 'https://agent-workbench-tau.vercel.app/', path: '/work/agent-workbench/', status: 'Experimental desktop app', release: 'v1 · app 0.1.0', platforms: 'macOS · Apple Silicon', licence: 'Not declared', updated: '29 Sep 2026' },
+}
+const workbenchShots = [
+  ['/images/workbench/workspace.webp', 'Workspace & agent runs', 'Agent Workbench workspace showing a Codex conversation and session controls'],
+  ['/images/workbench/codebase-map.webp', 'Interactive codebase map', 'Agent Workbench codebase map showing components and relationships'],
+  ['/images/workbench/change-review.webp', 'Per-run change review', 'Agent Workbench change review showing a readable code diff'],
 ]
-const incidentLabScreenshots = [
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 10.59.19 AM.png', label: 'Incident run dashboard', alt: 'IncidentLab dashboard listing incident investigations and their current status' },
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.00.10 AM.png', label: 'Investigation overview', alt: 'IncidentLab investigation overview with workflow progress, conclusion, and run facts' },
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.00.31 AM.png', label: 'Evidence review', alt: 'IncidentLab evidence review showing attributable telemetry and repository evidence' },
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.01.13 AM.png', label: 'Evidence-linked diagnosis', alt: 'IncidentLab diagnosis view showing hypotheses connected to supporting evidence' },
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.01.24 AM.png', label: 'Ranked hypotheses', alt: 'IncidentLab diagnosis view showing ranked hypotheses and confidence levels' },
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.02.33 AM.png', label: 'Policy-checked repair', alt: 'IncidentLab repair view showing an accepted candidate and a safe unified diff' },
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.02.46 AM.png', label: 'Sandbox verification', alt: 'IncidentLab verification view showing all mandatory repair checks passing' },
-  { src: '/images/incidentlab/Screenshot 2026-09-28 at 11.03.01 AM.png', label: 'Immutable audit trail', alt: 'IncidentLab audit view showing the immutable history of an investigation run' },
+const incidentShots = [
+  ['/images/incidentlab/run-dashboard.webp', 'Incident run dashboard', 'IncidentLab dashboard listing incident investigations and status'],
+  ['/images/incidentlab/investigation.webp', 'Investigation overview', 'IncidentLab investigation overview with progress and run facts'],
+  ['/images/incidentlab/evidence.webp', 'Evidence review', 'IncidentLab review with attributable telemetry and source evidence'],
+  ['/images/incidentlab/diagnosis.webp', 'Evidence-linked diagnosis', 'IncidentLab diagnosis with hypotheses linked to evidence'],
+  ['/images/incidentlab/hypotheses.webp', 'Ranked hypotheses', 'IncidentLab ranked hypotheses and confidence levels'],
+  ['/images/incidentlab/repair.webp', 'Policy-checked repair', 'IncidentLab accepted repair shown as a unified diff'],
+  ['/images/incidentlab/verification.webp', 'Sandbox verification', 'IncidentLab verification with mandatory repair checks'],
+  ['/images/incidentlab/audit.webp', 'Immutable audit trail', 'IncidentLab audit history for an investigation run'],
 ]
 
-function Arrow({ diagonal = false }) {
-  return <span className="arrow" aria-hidden="true">{diagonal ? <LuArrowUpRight /> : <LuArrowRight />}</span>
+function track(action, detail = {}) {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new CustomEvent('portfolio:analytics', { detail: { action, ...detail } }))
+  sendAnalyticsEvent(action, detail)
 }
-
-function Wordmark() {
-  return <span className="wordmark">RAJAT <span>VARMA<span className="wordmark-dot">.</span></span></span>
+function Link({ event, detail, onClick, children, ...props }) {
+  return <a {...props} onClick={(e) => { onClick?.(e); if (event) track(event, detail) }}>{children}</a>
 }
-
-function ProjectVisual({ screenshots, projectName }) {
-  const [active, setActive] = useState(0)
-  const [paused, setPaused] = useState(false)
-
-  useEffect(() => {
-    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const timer = window.setInterval(() => setActive((index) => (index + 1) % screenshots.length), 6500)
-    return () => window.clearInterval(timer)
-  }, [paused])
-
-  const showPrevious = () => setActive((index) => (index - 1 + screenshots.length) % screenshots.length)
-  const showNext = () => setActive((index) => (index + 1) % screenshots.length)
-
-  return (
-    <div
-      className="project-visual"
-      role="region"
-      aria-roledescription="carousel"
-      aria-label={`${projectName} screenshots`}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false) }}
-    >
-      <div className="visual-glow" />
-      <a className="screenshot-stage" href={screenshots[active].src} target="_blank" rel="noreferrer" aria-label={`Open ${screenshots[active].label} image in a new tab`}>
-        <img
-          className="project-screenshot"
-          src={screenshots[active].src}
-          alt={screenshots[active].alt}
-          loading="lazy"
-        />
-      </a>
-      <button className="slide-arrow slide-previous" type="button" onClick={showPrevious} aria-label="Previous screenshot"><LuArrowLeft /></button>
-      <button className="slide-arrow slide-next" type="button" onClick={showNext} aria-label="Next screenshot"><LuArrowRight /></button>
-      <div className="slideshow-footer">
-        <div className="slide-caption" aria-live="polite"><span className="caption-dot" /> <span>{screenshots[active].label}</span></div>
-        <div className="slide-dots" aria-label="Choose screenshot">
-          {screenshots.map((screenshot, index) => <button key={screenshot.src} className={index === active ? 'active' : ''} type="button" aria-label={`Show ${screenshot.label}`} aria-current={index === active ? 'true' : undefined} onClick={() => setActive(index)} />)}
-        </div>
-        <span className="slide-count">0{active + 1} / 0{screenshots.length}</span>
-      </div>
-    </div>
-  )
+function Arrow({ up = false }) { return <span className="arrow" aria-hidden="true">{up ? <LuArrowUpRight /> : <LuArrowRight />}</span> }
+function Wordmark() { return <span className="wordmark">RAJAT <span>VARMA<span className="wordmark-dot">.</span></span></span> }
+function Header({ home = false }) {
+  const [open, setOpen] = useState(false); const prefix = home ? '' : '/'
+  return <header className="site-header"><a className="brand" href={`${prefix}#top`} aria-label="Rajat Varma, home"><Wordmark /></a><button className="menu-toggle" type="button" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <LuX /> : <LuMenu />}</button><nav className={open ? 'nav-links open' : 'nav-links'} aria-label="Main navigation"><a href={`${prefix}#experience`}>Experience</a><a href={`${prefix}#work`}>Work</a><a href="/writing/">Writing</a><a className="nav-contact" href={`${prefix}#contact`}>Contact <Arrow up /></a></nav></header>
 }
-
-export function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const closeMenu = () => setMenuOpen(false)
-
-  return (
-    <>
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Rajat Varma, home" onClick={closeMenu}><Wordmark /></a>
-        <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <LuX /> : <LuMenu />}</button>
-        <nav className={menuOpen ? 'nav-links open' : 'nav-links'} aria-label="Main navigation">
-          <a href="#about" onClick={closeMenu}>About</a>
-          <a href="#experience" onClick={closeMenu}>Experience</a>
-          <a href="#expertise" onClick={closeMenu}>Expertise</a>
-          <a href="#work" onClick={closeMenu}>Work</a>
-          <a className="nav-contact" href="#contact" onClick={closeMenu}>Let's connect <Arrow diagonal /></a>
-        </nav>
-      </header>
-
-      <main id="top">
-        <section className="hero section-shell" aria-labelledby="hero-heading">
-          <div className="hero-copy">
-            <div className="eyebrow"><span className="eyebrow-line" /> SENIOR SOFTWARE ENGINEER · 5 YEARS EXPERIENCE</div>
-            <h1 id="hero-heading">Building the<br /><em>next layer</em> of<br />software<span className="period">.</span></h1>
-            <p className="hero-description">I'm Rajat, I build reliable AI systems, with a focus on LLMOps and observability for AI agents with full-stack engineering skills in React, Java Spring Boot, and Go.</p>
-            <div className="hero-actions">
-              <a className="button button-dark" href="#work">Explore my work <Arrow diagonal /></a>
-              <a className="text-link" href="#about">More about me <Arrow /></a>
-            </div>
-          </div>
-          <div className="hero-art" role="img" aria-label="Portrait of Rajat Varma surrounded by full-stack engineering and agentic AI motifs">
-            <div className="hero-orbit orbit-outer" aria-hidden="true" /><div className="hero-orbit orbit-inner" aria-hidden="true" />
-            <div className="orbit-label label-top" aria-hidden="true">01 / ENGINEER</div>
-            <div className="orbit-label label-right" aria-hidden="true">BUILD • SHIP • ITERATE</div>
-            <div className="hero-core portrait-core"><img src="/images/ppf.png" alt="" fetchPriority="high" /></div>
-            <div className="floating-card card-code" aria-hidden="true"><span className="floating-icon"><LuCodeXml /></span><span>FULL-STACK<br /><b>ENGINEERING</b></span></div>
-            <div className="floating-card card-ai" aria-hidden="true"><span className="floating-icon"><LuSparkles /></span><span>AGENTIC AI<br /><b>& LLMOPS</b></span></div>
-            <span className="orbit-spark spark-one" aria-hidden="true">✳</span><span className="orbit-spark spark-two" aria-hidden="true">✦</span>
-          </div>
-          <div className="hero-footer"><span>BASED IN INDIA · BUILDING FOR EVERYWHERE</span><span>SCROLL TO EXPLORE ↓</span></div>
-        </section>
-
-        <section id="about" className="intro section-shell">
-          <div className="section-kicker"><span className="kicker-number">01</span><span>ABOUT ME</span></div>
-          <div className="intro-content"><h2>I work where <span>solid engineering</span> meets new possibilities.</h2><div><p>For five years, I’ve built software across the stack, from responsive React interfaces to reliable services in Java, Spring Boot, and Go.</p><p>Today, I’m especially focused on agentic AI: building useful agent experiences and the LLMOps and observability foundations that make them easier to understand, operate, and improve.</p><a className="underlined-link" href={github} target="_blank" rel="noreferrer">Find me on GitHub <Arrow diagonal /></a></div></div>
-        </section>
-
-        <section id="experience" className="experience section-shell" aria-labelledby="experience-heading">
-          <div className="section-kicker"><span className="kicker-number">02</span><span>EXPERIENCE</span></div>
-          <div className="experience-layout">
-            <div className="experience-intro"><h2 id="experience-heading">Where I’ve<br /><em>built & grown.</em></h2><p>Five years of engineering experience across product interfaces, backend services, and the systems behind them.</p></div>
-            <div className="experience-timeline">
-              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>CURRENT</span><span>01 / 02</span></div><h3>Microsoft<span className="period">.</span></h3><p className="experience-role">Senior Software Engineer</p><p className="experience-note"> Leading the design and delivery of high performance backend systems that improve the performance and efficiency of AI agents.</p></article>
-              <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>PREVIOUS</span><span>02 / 02</span></div><h3>Flipkart<span className="period">.</span></h3><p className="experience-role">SDE 2</p><p className="experience-note"> Improved performance during Big Billion Days, built a RAG pipeline for data observability, and optimized a payments microservice serving millions.</p></article>
-            </div>
-          </div>
-        </section>
-
-        <section id="expertise" className="expertise section-shell">
-          <div className="section-kicker"><span className="kicker-number">03</span><span>WHAT I DO</span></div>
-          <div className="section-heading-row"><h2>My toolkit<span className="period">.</span></h2><p>From product interfaces to the systems and intelligence behind them.</p></div>
-          <div className="expertise-grid">
-            <article className="expertise-card"><span className="card-index">01 / INTERFACE</span><span className="skill-symbol"><LuPanelsTopLeft /></span><h3>Frontend<br />engineering</h3><p>Thoughtful, responsive interfaces with React that make complex workflows feel clear.</p><div className="skill-tags"><span>React</span><span>UI architecture</span><span>Product UX</span></div></article>
-            <article className="expertise-card"><span className="card-index">02 / SYSTEMS</span><span className="skill-symbol"><LuServer /></span><h3>Backend<br />systems</h3><p>Services and APIs designed for maintainability, reliability, and real-world scale.</p><div className="skill-tags"><span>Java</span><span>Spring Boot</span><span>Go</span></div></article>
-            <article className="expertise-card expertise-card-accent"><span className="card-index">03 / INTELLIGENCE</span><span className="skill-symbol"><LuBot /></span><h3>Agentic AI<br />& operations</h3><p>Agent experiences backed by practical LLMOps and observability, so behavior stays visible.</p><div className="skill-tags"><span>AI agents</span><span>LLMOps</span><span>Observability</span></div></article>
-          </div>
-        </section>
-
-        <section id="work" className="work section-shell">
-          <div className="section-kicker"><span className="kicker-number">04</span><span>SELECTED WORK</span></div>
-          <div className="section-heading-row"><h2>Featured projects<span className="period">.</span></h2><p>A closer look at some things I’ve built.</p></div>
-          <div className="project-list">
-            <article className="project-card">
-              <ProjectVisual screenshots={incidentLabScreenshots} projectName="IncidentLab" />
-              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Incident<br />Lab<span>.</span></h3><p className="project-lead">An evidence-backed lab for diagnosing incidents and safely verifying AI-generated repairs.</p><p>Reproduce deterministic failures, collect attributable telemetry, build cited root-cause hypotheses, and keep a human approval gate before repair. Every candidate is policy-checked and verified in an isolated sandbox with a durable audit trail.</p><div className="project-tags"><span>React</span><span>TypeScript</span><span>FastAPI</span><span>Temporal</span><span>OpenTelemetry</span><span>Docker</span></div><div className="project-actions"><a className="button button-lime" href={incidentLabPreview} target="_blank" rel="noreferrer">Live preview <Arrow diagonal /></a><a className="underlined-link" href={incidentLabProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div></div>
-            </article>
-            <article className="project-card">
-              <ProjectVisual screenshots={agentWorkbenchScreenshots} projectName="Agent Workbench" />
-              <div className="project-copy"><div className="project-meta"><span>FEATURED PROJECT</span><span>2026</span></div><h3>Agent<br />Workbench<span>.</span></h3><p className="project-lead">A local-first desktop workspace for working with Codex inside your own codebase.</p><p>Open a project, keep conversations organized, explore an interactive codebase map, and review each run’s changes in one place. Built with an Electron and React interface, a local FastAPI backend, and SQLite persistence.</p><div className="project-tags"><span>Electron</span><span>React</span><span>FastAPI</span><span>SQLite</span><span>Codex CLI</span></div><div className="project-actions"><a className="button button-lime" href={agentWorkbenchPreview} target="_blank" rel="noreferrer">Live preview <Arrow diagonal /></a><a className="underlined-link" href={agentWorkbenchProject} target="_blank" rel="noreferrer">View on GitHub <Arrow diagonal /></a></div></div>
-            </article>
-          </div>
-        </section>
-
-        <section className="principles section-shell" aria-labelledby="principles-heading"><div className="section-kicker"><span className="kicker-number">05</span><span>HOW I THINK</span></div><div className="principles-layout"><h2 id="principles-heading">Curious by nature.<br /><em>Practical</em> by design.</h2><div className="principles-list"><div><span>01</span><p>Start with the problem, then find the simplest useful solution.</p></div><div><span>02</span><p>Build for clarity, from the interface to the underlying architecture.</p></div><div><span>03</span><p>Make systems observable so they can be trusted and improved.</p></div></div></div></section>
-
-        <section id="contact" className="contact section-shell" aria-labelledby="contact-heading">
-          <div className="section-kicker"><span className="kicker-number">06</span><span>LET'S CONNECT</span></div>
-          <div className="contact-panel">
-            <div className="contact-intro">
-              <span className="contact-availability"><span /> OPEN TO CONVERSATION</span>
-              <h2 id="contact-heading">Have an idea?<br /><em>Let’s talk.</em></h2>
-              <p>I’m always interested in thoughtful products, hard engineering problems, and what AI can make possible.</p>
-              <div className="contact-decoration" aria-hidden="true"><LuSparkles /></div>
-            </div>
-            <div className="contact-info">
-              <p className="contact-label">DIRECT DETAILS</p>
-              <div className="contact-detail"><span className="contact-icon"><LuMail /></span><div><span className="detail-label">EMAIL</span><span className="detail-value">vrajatlink@gmail.com</span></div></div>
-              <p className="contact-label social-label">FIND ME ONLINE</p>
-              <div className="contact-socials">
-                <a href={github} target="_blank" rel="noreferrer" aria-label="GitHub profile"><FaGithub /><span>GitHub</span><LuArrowUpRight className="social-arrow" /></a>
-                <a href="https://x.com/rajat_2709" target="_blank" rel="noreferrer" aria-label="X profile"><FaXTwitter /><span>X / Twitter</span><LuArrowUpRight className="social-arrow" /></a>
-                <a href="https://www.linkedin.com/in/rajat-v-2bbb693b1/" target="_blank" rel="noreferrer" aria-label="LinkedIn profile"><FaLinkedinIn /><span>LinkedIn</span><LuArrowUpRight className="social-arrow" /></a>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="site-footer section-shell"><a href="#top" className="footer-brand" aria-label="Rajat Varma, back to top"><Wordmark /></a><span>DESIGNED & BUILT WITH INTENTION.</span><a href="#top">BACK TO TOP ↑</a></footer>
-    </>
-  )
+function Footer() { return <footer className="site-footer section-shell"><a href="/" className="footer-brand"><Wordmark /></a><span>DESIGNED & BUILT WITH INTENTION.</span><a href="#top">BACK TO TOP ↑</a></footer> }
+function ProjectVisual({ shots, name }) {
+  const [active, setActive] = useState(0), [paused, setPaused] = useState(false)
+  useEffect(() => { if (paused || matchMedia('(prefers-reduced-motion: reduce)').matches) return; const id = setInterval(() => setActive(i => (i + 1) % shots.length), 6500); return () => clearInterval(id) }, [paused, shots.length])
+  const shot = shots[active]
+  return <div className="project-visual" role="region" aria-roledescription="carousel" aria-label={`${name} screenshots`} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setPaused(false) }}><div className="visual-glow" /><a className="screenshot-stage" href={shot[0]} target="_blank" rel="noreferrer" aria-label={`Open ${shot[1]} image`}><img className="project-screenshot" src={shot[0]} alt={shot[2]} loading="lazy" decoding="async" /></a><button className="slide-arrow slide-previous" onClick={() => setActive(i => (i - 1 + shots.length) % shots.length)} aria-label="Previous screenshot"><LuArrowLeft /></button><button className="slide-arrow slide-next" onClick={() => setActive(i => (i + 1) % shots.length)} aria-label="Next screenshot"><LuArrowRight /></button><div className="slideshow-footer"><div className="slide-caption" aria-live="polite"><span className="caption-dot" />{shot[1]}</div><div className="slide-dots" aria-label="Choose screenshot">{shots.map((s, i) => <button key={s[0]} className={i === active ? 'active' : ''} aria-label={`Show ${s[1]}`} aria-current={i === active ? 'true' : undefined} onClick={() => setActive(i)} />)}</div><span className="slide-count">{active + 1} / {shots.length}</span></div></div>
 }
-
-if (typeof document !== 'undefined') {
-  hydrateRoot(document.getElementById('root'), <App />)
+function Experience({ company, dates, location, current, progression, children }) {
+  return <article className="experience-item"><span className="experience-node" /><div className="experience-topline"><span>{current ? 'CURRENT' : 'PREVIOUS'} · {dates}</span></div><h3>{company}<span className="period">.</span></h3><p className="experience-location">{location}</p><div className="role-progression" aria-label={`${company} role progression`}>{progression.map((role, index) => <div className="role-step" key={role.title}><span className="role-marker">{index === 0 ? 'STARTED' : 'PROMOTED'}</span><div><p className="experience-role">{role.title}</p><p className="role-dates">{role.dates}</p></div></div>)}</div><ul className="achievement-list">{children}</ul></article>
 }
+function ArticleCard({ slug, title, description }) { return <article className="article-card"><span>AI RELIABILITY · 8 MIN READ</span><h3><a href={`/writing/${slug}/`}>{title}</a></h3><p>{description}</p><a className="underlined-link" href={`/writing/${slug}/`}>Read article <Arrow /></a></article> }
+function Contact() { return <section id="contact" className="contact section-shell" aria-labelledby="contact-heading"><div className="section-kicker"><span className="kicker-number">07</span><span>LET'S CONNECT</span></div><div className="contact-panel"><div className="contact-intro"><span className="contact-availability"><span /> OPEN TO CONVERSATION</span><h2 id="contact-heading">Working on a<br /><em>hard problem?</em></h2><p>I’m interested in senior backend, AI infrastructure and developer-platform conversations with ambitious product teams.</p><div className="contact-decoration" aria-hidden="true"><LuSparkles /></div></div><div className="contact-info"><p className="contact-label">DIRECT DETAILS</p><Link className="contact-detail" event="email_clicked" href={`mailto:${EMAIL}`}><span className="contact-icon"><LuMail /></span><span className="contact-detail-copy"><span className="detail-label">EMAIL</span><span className="detail-value">{EMAIL}</span></span></Link><p className="contact-label social-label">FIND ME ONLINE</p><div className="contact-socials"><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub /><span>GitHub</span><LuArrowUpRight className="social-arrow" /></Link><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn /><span>LinkedIn</span><LuArrowUpRight className="social-arrow" /></Link><Link event="twitter_clicked" href={TWITTER} target="_blank" rel="noreferrer"><FaXTwitter /><span>X / Twitter</span><LuArrowUpRight className="social-arrow" /></Link></div></div></div></section> }
+
+function Home() {
+  return <><Header home /><main id="top">
+    <section className="hero section-shell" aria-labelledby="hero-heading"><div className="hero-copy"><div className="eyebrow"><span className="eyebrow-line" /> SENIOR SOFTWARE ENGINEER · 5 YEARS EXPERIENCE</div><h1 id="hero-heading">Building the<br /><em>next layer</em> of<br />software<span className="period">.</span></h1><p className="hero-description">Senior software engineer building reliable AI and backend systems. Five years across Microsoft and Flipkart, now focused on agent infrastructure, observability and developer tooling.</p><div className="hero-actions"><a className="button button-dark" href="#work">View featured work <Arrow up /></a><Link className="button button-quiet" event="email_clicked" href={`mailto:${EMAIL}`}>Contact me <Arrow /></Link></div><div className="hero-socials"><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn /> LinkedIn</Link><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub /> GitHub</Link></div></div><div className="hero-art" role="img" aria-label="Portrait of Rajat Varma with backend and AI infrastructure motifs"><div className="hero-orbit orbit-outer" /><div className="hero-orbit orbit-inner" /><div className="orbit-label label-top">01 / ENGINEER</div><div className="orbit-label label-right">BUILD • VERIFY • OPERATE</div><div className="hero-core portrait-core"><img src="/images/portrait.webp" alt="" fetchPriority="high" /></div><div className="floating-card card-code"><span className="floating-icon"><LuServer /></span><span>BACKEND<br /><b>SYSTEMS</b></span></div><div className="floating-card card-ai"><span className="floating-icon"><LuSparkles /></span><span>AI AGENTS<br /><b>& LLMOPS</b></span></div></div><div className="hero-footer"><span>BASED IN INDIA · BUILDING FOR EVERYWHERE</span><span>SCROLL TO EXPLORE ↓</span></div></section>
+    <section id="about" className="intro section-shell"><div className="section-kicker"><span className="kicker-number">01</span><span>ABOUT ME</span></div><div className="intro-content"><h2>I work where <span>reliable systems</span> meet new possibilities.</h2><div><p>I build backend services and AI-agent infrastructure where correctness, observability and operator control matter as much as the model.</p><p>My work spans product delivery, system architecture and the tooling teams need to understand difficult systems in production.</p></div></div></section>
+    <section id="experience" className="experience section-shell" aria-labelledby="experience-heading"><div className="section-kicker"><span className="kicker-number">02</span><span>EXPERIENCE</span></div><div className="experience-layout"><div className="experience-intro"><h2 id="experience-heading">Where I’ve<br /><em>built & grown.</em></h2><p>Ownership across backend systems, AI-agent infrastructure and high-scale commerce.</p></div><div className="experience-timeline"><Experience current company="Microsoft" dates="Jan 2025 — Present" location="India · Hybrid" progression={[{title:'Software Engineer (L62)',dates:'Jan 2025 — Jan 2026'},{title:'Senior Software Engineer (L63)',dates:'Feb 2026 — Present'}]}><li>Lead the design of a microservice responsible for agent orchestration at scale, with agent observability built into the operating model.</li><li>Developed complex RAG and context pipelines, then optimised them to improve agent performance and efficiency.</li><li>Built a search agent now running in production and collaborate across teams on performance, reliability and user experience.</li></Experience><Experience company="Flipkart" dates="Jan 2022 — Jan 2025" location="Bengaluru, Karnataka · Hybrid" progression={[{title:'Software Development Engineer',dates:'Jan 2022 — Jan 2023'},{title:'Software Development Engineer II',dates:'Jan 2023 — Jan 2025'}]}><li>Improved reliability for Big Billion Days traffic, helping services sustain peak events serving millions of requests.</li><li>Maintained and optimised a payment backend service under strict latency and correctness constraints.</li><li>Built a RAG pipeline for user data and metrics that made production behaviour easier to investigate through improved data observability.</li></Experience></div></div></section>
+    <section id="expertise" className="expertise section-shell"><div className="section-kicker"><span className="kicker-number">03</span><span>WHAT I DO</span></div><div className="section-heading-row"><h2>My toolkit<span className="period">.</span></h2><p>Systems that are useful, inspectable and safe to operate.</p></div><div className="expertise-grid"><article className="expertise-card"><span className="card-index">01 / PLATFORMS</span><span className="skill-symbol"><LuPanelsTopLeft /></span><h3>Developer<br />tooling</h3><p>Local-first workflows and clear review surfaces for complex engineering work.</p><div className="skill-tags"><span>React</span><span>Electron</span><span>Product UX</span></div></article><article className="expertise-card"><span className="card-index">02 / SYSTEMS</span><span className="skill-symbol"><LuServer /></span><h3>Backend<br />systems</h3><p>Services designed for maintainability, reliability and real-world scale.</p><div className="skill-tags"><span>Java</span><span>Spring Boot</span><span>Go</span></div></article><article className="expertise-card expertise-card-accent"><span className="card-index">03 / INTELLIGENCE</span><span className="skill-symbol"><LuBot /></span><h3>AI agent<br />infrastructure</h3><p>Evidence, policy and observability around models so behaviour remains inspectable.</p><div className="skill-tags"><span>AI agents</span><span>LLMOps</span><span>Observability</span></div></article></div></section>
+    <section id="work" className="work section-shell"><div className="section-kicker"><span className="kicker-number">04</span><span>SELECTED WORK</span></div><div className="section-heading-row"><h2>Featured projects<span className="period">.</span></h2><p>Two systems built around explicit trust boundaries.</p></div><div className="project-list"><ProjectCard project={projectData.incidentlab} shots={incidentShots} eyebrow="AI RELIABILITY" lead="AI can propose a diagnosis; it should not decide whether its own repair worked." copy="Evidence stays outside the model, approval is explicit, and deterministic checks verify every proposed change in a sandbox." tags={['React','FastAPI','PostgreSQL','Temporal','OpenTelemetry']} /><ProjectCard project={projectData.workbench} shots={workbenchShots} eyebrow="DEVELOPER TOOLING" lead="Terminal-only agent sessions make context, changes and destructive actions difficult to manage." copy="A local desktop workspace keeps conversations persistent and every accept, revert, commit and push explicit." tags={['Electron','React','FastAPI','SQLite','Codex CLI']} /></div></section>
+    <section className="principles section-shell" aria-labelledby="principles-heading"><div className="section-kicker"><span className="kicker-number">05</span><span>ENGINEERING OPINIONS</span></div><div className="principles-layout"><h2 id="principles-heading">Trust needs<br /><em>boundaries.</em></h2><div className="principles-list">{['Treat model output as a proposal, not a source of truth.','Verification must be independent of generation.','Missing evidence should remain visible.','Human approval should be a system boundary, not a prompt instruction.','Local-first tools should keep destructive actions explicit.'].map((x,i)=><div key={x}><span>0{i+1}</span><p>{x}</p></div>)}</div></div></section>
+    <section className="writing-preview section-shell"><div className="section-kicker"><span className="kicker-number">06</span><span>WRITING</span></div><div className="section-heading-row"><h2>Notes from the work<span className="period">.</span></h2><a className="underlined-link" href="/writing/">View all writing <Arrow /></a></div><div className="article-grid"><ArticleCard slug="why-an-ai-agent-should-not-verify-its-own-repair" title="Why an AI agent should not verify its own repair" description="Generation and verification fail differently. The architecture should acknowledge that." /><ArticleCard slug="designing-an-evidence-backed-incident-workflow" title="Designing an evidence-backed incident investigation workflow" description="A practical workflow for citations, approval, fail-closed policy and independent checks." /></div></section>
+    <section className="opportunity section-shell"><span className="section-kicker">OPPORTUNITIES</span><p>I enjoy connecting with teams working on reliable AI infrastructure, developer tooling and difficult backend problems.</p><a className="button button-dark" href="#contact">Start a conversation <Arrow /></a></section><Contact />
+  </main><Footer /></>
+}
+function ProjectCard({ project, shots, eyebrow, lead, copy, tags }) { return <article className="project-card"><ProjectVisual shots={shots} name={project.name} /><div className="project-copy"><div className="project-meta"><span>{eyebrow}</span><span>2026</span></div><h3>{project.name === 'Agent Workbench' ? <>Agent<br/>Workbench</> : <>Incident<br/>Lab</>}<span>.</span></h3><p className="project-lead">{lead}</p><p>{copy}</p><div className="project-tags">{tags.map(t=><span key={t}>{t}</span>)}</div><div className="project-actions"><Link className="button button-lime" event="case_study_opened" detail={{ project: project.name }} href={project.path}>Case study <Arrow /></Link><Link className="underlined-link" event="demo_launched" detail={{ project: project.name }} href={project.demo} target="_blank" rel="noreferrer">Live demo <Arrow up /></Link><Link className="underlined-link" event="github_opened" detail={{ project: project.name }} href={project.repo} target="_blank" rel="noreferrer">GitHub <Arrow up /></Link></div></div></article> }
+
+function GraphNode({ eyebrow, children, accent = false }) { return <div className={`graph-node${accent ? ' graph-node-accent' : ''}`}>{eyebrow && <span>{eyebrow}</span>}<strong>{children}</strong></div> }
+function GraphArrow({ label, down = false }) { return <div className={`graph-arrow${down ? ' graph-arrow-down' : ''}`} aria-hidden="true">{label && <span>{label}</span>}<b>{down ? '↓' : '→'}</b></div> }
+function Architecture({ workbench = false }) {
+  if (workbench) return <div className="system-graph workbench-graph" role="img" aria-label="Agent Workbench architecture: React interface inside Electron communicates with a local FastAPI backend over an authenticated WebSocket. FastAPI stores data in SQLite and launches Codex CLI against the local Git workspace.">
+    <div className="graph-boundary graph-desktop-boundary"><span className="graph-boundary-label">PACKAGED macOS APPLICATION</span><div className="graph-row graph-row-primary"><GraphNode eyebrow="INTERFACE">React</GraphNode><GraphArrow label="rendered by"/><GraphNode eyebrow="DESKTOP RUNTIME" accent>Electron shell</GraphNode><GraphArrow label="starts locally"/><GraphNode eyebrow="LOCAL SERVICE">FastAPI</GraphNode></div><div className="graph-branch-grid"><GraphNode eyebrow="FASTAPI PERSISTS">SQLite</GraphNode><GraphNode eyebrow="FASTAPI LAUNCHES" accent>Codex CLI</GraphNode><GraphNode eyebrow="CODEX OPERATES ON">Git workspace</GraphNode></div><div className="graph-protocol">React ↔ FastAPI over an authenticated local WebSocket · no hosted application backend</div></div>
+  </div>
+  return <div className="system-graph incident-graph" role="img" aria-label="IncidentLab architecture: the React review console talks to FastAPI. Telemetry and pinned source are collected as evidence. PostgreSQL stores facts and Temporal orchestrates model adapters, human approval, fail-closed repair policy, trusted verification and a Docker sandbox.">
+    <div className="graph-boundary graph-review-boundary"><span className="graph-boundary-label">HUMAN REVIEW PLANE</span><div className="graph-row graph-row-review"><GraphNode eyebrow="REVIEW CONSOLE">React</GraphNode><GraphArrow label="API"/><GraphNode eyebrow="APPLICATION">FastAPI</GraphNode><GraphArrow label="checkpoint"/><GraphNode eyebrow="SYSTEM BOUNDARY" accent>Human approval</GraphNode></div></div>
+    <GraphArrow down label="durable investigation state"/>
+    <div className="graph-boundary graph-control-boundary"><span className="graph-boundary-label">CONTROL & EVIDENCE PLANE</span><div className="graph-row graph-row-primary"><GraphNode eyebrow="OBSERVATIONS">Traces · metrics · logs</GraphNode><GraphArrow label="collect"/><GraphNode eyebrow="ATTRIBUTABLE FACTS" accent>Evidence collector</GraphNode><GraphArrow label="orchestrate"/><GraphNode eyebrow="DURABLE WORKFLOW">Temporal</GraphNode></div><div className="graph-row graph-row-branch"><GraphNode eyebrow="SOURCE OF RECORD">PostgreSQL</GraphNode><GraphArrow label="bounded context"/><GraphNode eyebrow="PROPOSAL ONLY">Model adapters</GraphNode><GraphArrow label="candidate diff"/><GraphNode eyebrow="FAIL CLOSED">Repair policy</GraphNode></div></div>
+    <GraphArrow down label="approved, policy-compliant candidate"/>
+    <div className="graph-boundary graph-trust-boundary"><span className="graph-boundary-label">INDEPENDENT VERIFICATION BOUNDARY</span><div className="graph-row graph-row-final"><GraphNode eyebrow="SEPARATE SERVICE" accent>Trusted verifier</GraphNode><GraphArrow label="fixed checks"/><GraphNode eyebrow="NETWORK DISABLED">Docker sandbox</GraphNode></div></div>
+  </div>
+}
+function Metadata({ project }) { return <dl className="metadata-grid">{[['Status',project.status],['Latest release',project.release],['Platforms',project.platforms],['Licence',project.licence],['Last meaningful update',project.updated]].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}<div><dt>Repository</dt><dd><Link event="github_opened" detail={{ project: project.name }} href={project.repo} target="_blank" rel="noreferrer">GitHub ↗</Link></dd></div></dl> }
+function CaseSection({ label, title, children }) { return <section className="case-section section-shell"><div className="case-section-label">{label}</div><div className="case-prose">{title&&<h2>{title}</h2>}{children}</div></section> }
+function CaseStudy({ type }) {
+  const incident = type==='incidentlab', p=projectData[type]
+  useEffect(()=>{const el=document.querySelector('[data-complete]');if(!el)return;const o=new IntersectionObserver(([e])=>{if(e.isIntersecting)track('case_study_completed',{project:p.name})},{threshold:.8});o.observe(el);return()=>o.disconnect()},[p.name])
+  return <><Header/><main id="top" className="case-study"><section className="case-hero section-shell"><a className="back-link" href="/#work"><LuArrowLeft/> Featured work</a><span className="eyebrow">CASE STUDY · 2026</span><h1>{p.name}<span className="period">.</span></h1><p>{incident?'An evidence-backed incident investigation and repair-verification system.':'A local-first desktop workspace for making coding-agent work inspectable and reversible.'}</p><div className="case-actions"><Link className="button button-dark" event="demo_launched" detail={{project:p.name}} href={p.demo} target="_blank" rel="noreferrer">Try demo <Arrow up/></Link><Link className="underlined-link" event="github_opened" detail={{project:p.name}} href={p.repo} target="_blank" rel="noreferrer">Read source <Arrow up/></Link>{incident&&<><a className="underlined-link" href="#architecture">View architecture <Arrow/></a><a className="underlined-link" href={`${p.repo}/blob/main/docs/threat-model.md`} target="_blank" rel="noreferrer">Read threat model <Arrow up/></a></>}</div></section>
+    <CaseSection label="01 · PROBLEM" title={incident?'Plausible is not the same as proven.':'The terminal stops scaling before the agent does.'}><p>{incident?'AI systems can generate plausible diagnoses and repairs without sufficient evidence or independent verification. In incident response, an uncited explanation or self-certified patch can turn uncertainty into action.':'Terminal-only coding-agent workflows fragment context across sessions, diffs and shell history. As runs get longer, it becomes hard to answer what changed, why, and what you are about to accept.'}</p></CaseSection>
+    <CaseSection label="02 · PROPOSED SOLUTION" title={incident?'Separate explanation from authority.':'A persistent, local control surface.'}><p>{incident?'IncidentLab collects evidence, requires cited diagnosis and human approval, applies deterministic repair policy, and verifies candidates in a sandbox. The model proposes; controls outside the model decide.':'Agent Workbench organises local workspaces and conversations, generates an interactive codebase map, and exposes per-run change review with explicit accept and revert controls.'}</p></CaseSection>
+    <section id="architecture"><CaseSection label="03 · ARCHITECTURE" title="Boundaries you can reason about."><Architecture workbench={!incident}/><p>{incident?'React presents the review surface. FastAPI and PostgreSQL own state; Temporal makes the workflow durable. Model adapters receive bounded context, while a separate verifier owns sandbox execution.':'Electron owns the desktop lifecycle and starts FastAPI. React communicates over an authenticated local WebSocket. FastAPI persists in SQLite and launches the separately installed Codex CLI against the local Git workspace.'}</p></CaseSection></section>
+    {incident?<IncidentSections/>:<WorkbenchSections/>}
+    <CaseSection label={`${incident?'08':'06'} · PROJECT FACTS`}><Metadata project={p}/><div className="case-end" data-complete><Link className="button button-dark" event="demo_launched" detail={{project:p.name}} href={p.demo} target="_blank" rel="noreferrer">Open project <Arrow up/></Link></div></CaseSection>
+  </main><Footer/></>
+}
+function Decisions({ items }) { return <div className="decision-grid">{items.map((x,i)=><article key={x}><span>0{i+1}</span><h3>{x}</h3></article>)}</div> }
+function IncidentSections(){return <><CaseSection label="04 · IMPORTANT DECISIONS"><Decisions items={['Evidence remains outside the model','Repair requires human approval','Policy checks fail closed','Verification runs independently','Missing evidence remains explicit']}/></CaseSection><CaseSection label="05 · DEMO BOUNDARY" title="A useful demo with an honest boundary."><p>The deployed browser demo uses curated saved investigation data and guided replays; it requires no account, backend or API key. The full local system runs the backend workflow, telemetry stack, model integration and sandboxed verifier through Docker Compose.</p></CaseSection><CaseSection label="06 · TESTING & EVALUATION" title="Success is only one possible result."><ul><li><strong>Scenarios:</strong> database pool exhaustion and inventory underflow.</li><li><strong>Checks:</strong> baseline reproduction, compilation, static analysis, unit and integration tests, and repeated incident replay.</li><li><strong>Outcomes:</strong> successful, failed, inconclusive, closed and cancelled remain distinct.</li><li><strong>Restrictions:</strong> non-root, network-disabled containers with resource limits; the model worker never receives the Docker socket.</li></ul></CaseSection><CaseSection label="07 · TRADEOFFS" title="Controlled scenarios, not production theatre."><p>This is a portfolio and educational system, not a hardened production incident-response platform. Its sandbox should not be treated as a security boundary for arbitrary untrusted repositories.</p></CaseSection></>}
+function WorkbenchSections(){return <><CaseSection label="04 · PRODUCT DECISIONS"><Decisions items={['Persistent local workspaces and conversations','Interactive codebase map','Per-run Git change review','Explicit accept and revert controls','Local SQLite persistence','Packaged macOS application']}/></CaseSection><CaseSection label="05 · SAFETY & LIMITS" title="Local-first does not mean consequence-free."><p>Nothing is committed or pushed automatically. Stage, commit, push, accept and revert actions remain visible. Conversation data lives on one computer without cloud sync or backup. The current DMG targets Apple Silicon and is unsigned and unnotarized.</p></CaseSection></>}
+
+const articles={
+ 'why-an-ai-agent-should-not-verify-its-own-repair':{title:'Why an AI agent should not verify its own repair',dek:'Generation and verification share failure modes. Reliable systems separate them.',sections:[['The conflict of interest is architectural','A model that proposes a repair has already committed to a hypothesis. Asking the same model, with the same context, whether the patch works creates correlated confidence—not independent evidence.'],['A verifier needs different authority','Generation may read evidence and produce a bounded diff. Verification executes fixed checks against a pinned baseline: reproduce, apply, compile, analyse, test, replay and store results as facts.'],['Design for inconclusive outcomes','A failed test is useful. Missing signals are useful too. IncidentLab keeps failed and inconclusive outcomes separate and makes evidence gaps visible.']]},
+ 'designing-an-evidence-backed-incident-workflow':{title:'Designing an evidence-backed incident investigation workflow',dek:'A practical architecture for moving from telemetry to a verified repair without turning model output into truth.',sections:[['Collect before explaining','The workflow first reproduces the incident and stores attributable traces, metrics, logs and pinned source. Diagnosis comes later, so every claim has stable evidence to cite.'],['Make approval a boundary','A prompt that says “wait for approval” is not an approval system. The workflow persists a checkpoint and cannot enter repair generation until a human decision changes state.'],['Fail closed, then verify independently','A candidate becomes a deterministic unified diff. Path, size, secret, syntax and clean-application rules run before sandbox execution. Independent checks derive the final state.']]}
+}
+function WritingIndex(){return <><Header/><main id="top"><section className="page-hero section-shell"><span className="eyebrow">WRITING</span><h1>Notes from<br/><em>the work.</em></h1><p>Practical opinions on reliable AI systems, evidence and developer tooling.</p></section><section className="writing-list section-shell"><ArticleCard slug="why-an-ai-agent-should-not-verify-its-own-repair" title={articles['why-an-ai-agent-should-not-verify-its-own-repair'].title} description={articles['why-an-ai-agent-should-not-verify-its-own-repair'].dek}/><ArticleCard slug="designing-an-evidence-backed-incident-workflow" title={articles['designing-an-evidence-backed-incident-workflow'].title} description={articles['designing-an-evidence-backed-incident-workflow'].dek}/></section></main><Footer/></>}
+function Article({slug}){const a=articles[slug];if(!a)return <NotFound/>;return <><Header/><main id="top"><article className="longform section-shell"><a className="back-link" href="/writing/"><LuArrowLeft/> All writing</a><header><span className="eyebrow">AI RELIABILITY · 8 MIN READ</span><h1>{a.title}</h1><p>{a.dek}</p></header><Architecture/>{a.sections.map(([t,b])=><section key={t}><h2>{t}</h2><p>{b}</p></section>)}<pre><code>{`candidate = policy.validate(model_proposal)\nresult = verifier.run(candidate, network="none")\nstatus = derive_state(result.checks)  # never model-authored`}</code></pre><aside><p>See the complete implementation and trust boundaries in IncidentLab.</p><a className="button button-dark" href="/work/incidentlab/">Read the case study <Arrow/></a></aside></article></main><Footer/></>}
+function NotFound(){return <><Header/><main className="not-found section-shell"><h1>Page not found<span className="period">.</span></h1><a className="button button-dark" href="/">Return home <Arrow/></a></main><Footer/></>}
+export function App({path}){const p=path||(typeof window!=='undefined'?location.pathname:'/');if(p==='/'||p==='/index.html')return <Home/>;if(p.startsWith('/work/incidentlab'))return <CaseStudy type="incidentlab"/>;if(p.startsWith('/work/agent-workbench'))return <CaseStudy type="workbench"/>;if(p==='/writing'||p==='/writing/')return <WritingIndex/>;if(p.startsWith('/writing/'))return <Article slug={p.split('/').filter(Boolean)[1]}/>;return <NotFound/>}
+if(typeof document!=='undefined'){if(!['localhost','127.0.0.1'].includes(location.hostname))inject();const root=document.getElementById('root');if(root.hasChildNodes())hydrateRoot(root,<App/>);else createRoot(root).render(<App/>)}
