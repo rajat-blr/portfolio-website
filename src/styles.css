@@ -126,3 +126,11 @@
 
 /* Hero positioning statement */
 .hero h1.hero-statement{font-size:clamp(48px,5.15vw,78px);line-height:1.01;max-width:700px;margin-bottom:20px}.hero-proof{font-size:clamp(18px,1.65vw,24px);font-weight:600;letter-spacing:-.035em;color:#3e493d;margin:0 0 17px}.hero-proof:before{content:'↳';color:#819b39;margin-right:10px}@media(max-width:1000px){.hero h1.hero-statement{font-size:clamp(45px,6vw,66px)}}@media(max-width:480px){.hero h1.hero-statement{font-size:clamp(42px,11vw,54px);line-height:1.03}.hero-proof{font-size:18px;line-height:1.35}}
+
+/* Evals product detail and article */
+.decision-grid article p{font-size:14px;line-height:1.7;color:#5c675a;margin:14px 0 0}
+.case-prose>.project-visual{margin-top:32px;width:100%;min-width:0}
+.case-prose>.project-visual .screenshot-stage{aspect-ratio:1.85}
+.article-sources a{text-decoration:underline;text-underline-offset:3px}
+.eval-graph .graph-boundary-label{font-size:8px}
+@media(max-width:480px){.eval-graph .graph-boundary-label{font-size:7px;letter-spacing:.06em}}
