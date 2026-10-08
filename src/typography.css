@@ -1,0 +1,179 @@
+/* Shared type scale: the same role uses the same size across every section. */
+:root {
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --type-section: clamp(36px, 4vw, 56px);
+  --type-card: 26px;
+  --type-body: 16px;
+  --type-small: 13px;
+  --type-label: 11px;
+  font-family: var(--font-ui);
+}
+
+.hero h1.hero-statement,
+.hero-summary .hero-description,
+.project-card-heading h3,
+.opportunity h2 {
+  font-family: var(--font-ui);
+}
+
+.work .section-heading-row h2,
+.expertise .section-heading-row h2,
+.writing-preview .section-heading-row h2,
+.experience-intro h2,
+.contact-message h2 {
+  font-family: var(--font-ui);
+  font-size: var(--type-section);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -.045em;
+}
+
+.project-card-heading h3,
+.experience-item h3,
+.toolkit-card h3,
+.article-card h3,
+.booking-card h3 {
+  font-family: var(--font-ui);
+  font-size: var(--type-card);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -.025em;
+}
+
+.hero-summary .hero-description,
+.section-heading-row p,
+.experience-intro p,
+.achievement-list li,
+.project-card .project-copy > p:not(.project-lead),
+.article-card p,
+.contact-message > p,
+.booking-card > p,
+.case-prose p,
+.case-prose li,
+.longform section p,
+.longform aside p {
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: -.01em;
+}
+
+.project-card > .project-lead {
+  font-family: var(--font-ui);
+  font-size: var(--type-body) !important;
+  font-weight: 500;
+  line-height: 1.75 !important;
+  letter-spacing: -.01em;
+  min-height: 56px;
+}
+
+.eyebrow,
+.hero .eyebrow,
+.section-kicker,
+.project-card .project-meta,
+.article-card-meta,
+.card-index,
+.experience-status,
+.role-marker,
+.booking-status,
+.booking-duration,
+.case-section-label,
+.metadata-grid dt,
+.graph-boundary-label,
+.graph-node > span,
+.graph-arrow span,
+.graph-protocol,
+.hero-footer,
+.site-footer > span,
+.site-footer > a:last-child {
+  font-family: var(--font-ui);
+  font-size: var(--type-label);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: .07em;
+}
+
+.role-step .experience-role {
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -.01em;
+}
+
+.experience-tenure,
+.experience-location,
+.role-dates,
+.project-card .project-tags span,
+.skill-tags span,
+.booking-email > span {
+  font-family: var(--font-ui);
+  font-size: var(--type-small);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+.button,
+.underlined-link,
+.project-card .project-actions .button,
+.project-card .project-actions .underlined-link,
+.booking-button,
+.booking-email a,
+.contact-profile-links a,
+.hero-socials a,
+.nav-links {
+  font-family: var(--font-ui);
+  font-size: var(--type-small);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.slide-caption,
+.slide-count,
+.project-card .slide-caption,
+.project-card .slide-count {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .015em;
+}
+
+.case-prose h2,
+.longform section h2 {
+  font-family: var(--font-ui);
+  font-size: var(--type-card);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -.025em;
+}
+
+@media (max-width: 1000px) and (min-width: 761px) {
+  .project-card > .project-lead { min-height: 84px; }
+}
+@media (max-width: 760px) {
+  :root { --type-card: 24px; }
+  .project-card > .project-lead { min-height: 0; }
+}
+@media (max-width: 380px) {
+  .project-card .project-actions { gap: 12px; }
+  .project-card .project-actions .button { padding-inline: 10px; gap: 8px; }
+  .booking-email a { font-size: var(--type-small); }
+}
+
+.page-hero h1,
+.case-hero h1,
+.longform header h1 {
+  font-family: var(--font-ui);
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -.045em;
+}
+@media (max-width: 760px) {
+  .project-card .project-actions { gap: 14px; }
+  .project-card .project-actions .button { padding-inline: 12px; gap: 10px; }
+  .project-card .project-actions .underlined-link { gap: 5px; }
+}

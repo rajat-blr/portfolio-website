@@ -4,6 +4,7 @@ import { inject, track as sendAnalyticsEvent } from '@vercel/analytics'
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
 import { LuActivity, LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuX } from 'react-icons/lu'
 import './styles.css'
+import './typography.css'
 
 const GITHUB = 'https://github.com/rajat-blr'
 const LINKEDIN = 'https://www.linkedin.com/in/rajatvarma2709'
@@ -50,7 +51,13 @@ function Arrow({ up = false }) { return <span className="arrow" aria-hidden="tru
 function Wordmark() { return <span className="wordmark">RAJAT <span>VARMA<span className="wordmark-dot">.</span></span></span> }
 function Header({ home = false }) {
   const [open, setOpen] = useState(false); const prefix = home ? '' : '/'
-  return <header className="site-header"><a className="brand" href={`${prefix}#top`} aria-label="Rajat Varma, home"><Wordmark /></a><button className="menu-toggle" type="button" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <LuX /> : <LuMenu />}</button><nav className={open ? 'nav-links open' : 'nav-links'} aria-label="Main navigation"><a href={`${prefix}#work`}>Work</a><a href={`${prefix}#experience`}>Experience</a><a href="/writing/">Writing</a><a className="nav-contact" href={`${prefix}#contact`}>Contact <Arrow up /></a></nav></header>
+  useEffect(() => {
+    if (!open) return
+    const closeOnEscape = event => { if (event.key === 'Escape') setOpen(false) }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [open])
+  return <header className="site-header"><div className="nav-bar"><a className="brand" href={`${prefix}#top`} aria-label="Rajat Varma, home"><Wordmark /></a><button className="menu-toggle" type="button" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <LuX /> : <LuMenu />}</button><nav id="main-navigation" className={open ? 'nav-links open' : 'nav-links'} aria-label="Main navigation" onClick={() => setOpen(false)}><div className="nav-pages"><a href={`${prefix}#work`}>Work</a><a href={`${prefix}#experience`}>Experience</a><a href="/writing/">Writing</a></div><a className="nav-contact" href={`${prefix}#contact`}>Contact <Arrow up /></a></nav></div></header>
 }
 function Footer() { return <footer className="site-footer section-shell"><a href="/" className="footer-brand"><Wordmark /></a><span>DESIGNED & BUILT WITH INTENTION.</span><a href="#top">BACK TO TOP ↑</a></footer> }
 function ProjectVisual({ shots, name }) {
@@ -74,7 +81,7 @@ function Contact() {
   return <section id="contact" className="contact section-shell" aria-labelledby="contact-heading">
     <div className="section-kicker"><span className="kicker-number">05</span><span>LET'S CONNECT</span></div>
     <div className="contact-booking-layout">
-      <div className="contact-message"><h2 id="contact-heading">Working on a<br />hard problem<span className="period">?</span></h2><p>Open to remote opportunities, both full-time and contract, focused on AI infrastructure, observability, and LLMOps. Flexible across time zones and comfortable collaborating with globally distributed teams.</p><div className="contact-profile-links"><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub />GitHub</Link><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn />LinkedIn</Link><Link event="twitter_clicked" href={TWITTER} target="_blank" rel="noreferrer"><FaXTwitter />X / Twitter</Link></div></div>
+      <div className="contact-message"><h2 id="contact-heading">Your next project.<br />Let’s build it together<span className="period">.</span></h2><p>Open to remote senior engineering roles and contract engagements in AI infrastructure, backend systems, observability, and LLMOps. Flexible across time zones and comfortable collaborating with globally distributed teams.</p><div className="contact-profile-links"><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub />GitHub</Link><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn />LinkedIn</Link><Link event="twitter_clicked" href={TWITTER} target="_blank" rel="noreferrer"><FaXTwitter />X / Twitter</Link></div></div>
       <div className="booking-card"><div className="booking-card-top"><span className="booking-status"><span />LET’S TALK</span><span className="booking-duration">30 MIN</span></div><h3>A conversation to<br />get things started.</h3><p>Pick a time that works for you.<br />See available slots on Calendly.</p><Link className="booking-button" event="booking_clicked" href={CALENDLY} target="_blank" rel="noopener noreferrer">Book a call <LuArrowUpRight /></Link><div className="booking-email"><span>Prefer email?</span><Link event="email_clicked" href={`mailto:${EMAIL}`}><LuMail />{EMAIL}<LuArrowUpRight /></Link></div></div>
     </div>
   </section>

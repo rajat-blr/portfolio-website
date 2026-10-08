@@ -355,3 +355,22 @@
 .contact-booking-layout a:focus-visible{outline:2px solid #7d973f;outline-offset:5px}
 @media(max-width:760px){.contact-booking-layout{grid-template-columns:1fr;gap:32px}.contact-message h2{font-size:44px}.contact-message>p{font-size:15px;max-width:480px}.contact-profile-links{margin-top:24px}.booking-card{padding:28px}.booking-card h3{font-size:28px}}
 @media(max-width:380px){.booking-card{padding:22px}.booking-email a{font-size:12px}.contact-profile-links{gap:18px}}
+
+/* Navigation: open spacing, centered links and a quiet contact action. */
+.site-header{height:auto;display:block;padding-top:24px;padding-bottom:24px;position:relative;z-index:20;background:transparent}
+.nav-bar{position:relative;display:flex;align-items:center;gap:24px;min-height:44px;padding:0;background:transparent;border-radius:0;box-shadow:none}
+.nav-bar .brand{margin-right:auto}
+.nav-bar .wordmark{font-family:var(--font-ui);font-size:17px;letter-spacing:-.035em;font-weight:600}
+.nav-bar .wordmark>span{font-weight:400}
+.nav-bar .nav-links{display:contents;position:static;padding:0;background:transparent;box-shadow:none}
+.nav-pages{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:30px}
+.nav-pages a{font-family:var(--font-ui);font-size:13px;font-weight:500;color:#69745f;line-height:1.5;padding:10px 0;transition:color .2s}
+.nav-pages a:hover{color:#263b20}
+.nav-bar .nav-links .nav-contact{display:flex;align-items:center;gap:14px;margin:0;padding:0!important;background:transparent;color:#34452c;font-size:13px;font-weight:500;border-radius:0;transform:none}
+.nav-bar .nav-contact .arrow{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#e8edde;transition:background .2s,transform .2s}
+.nav-bar .nav-links .nav-contact:hover{background:transparent;color:#263b20;transform:none}
+.nav-bar .nav-contact:hover .arrow{background:#dce7c8;transform:translate(2px,-2px)}
+.nav-bar a:focus-visible,.nav-bar button:focus-visible{outline:2px solid #7c9545;outline-offset:5px}
+.nav-bar .menu-toggle{display:none}
+@media(max-width:760px){.site-header{padding-top:20px;padding-bottom:20px}.nav-bar{gap:18px;min-height:40px}.nav-bar .wordmark{font-size:15px}.nav-bar .menu-toggle{display:flex;order:3;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border-radius:0;background:transparent;color:#3a4d2f}.nav-bar .menu-toggle svg{width:21px;height:21px}.nav-bar .nav-links .nav-contact{gap:8px;font-size:12px}.nav-bar .nav-contact .arrow{width:30px;height:30px}.nav-pages{display:none;left:0;right:0;top:calc(100% + 14px);transform:none;padding:12px;background:#f1f4eb;border-radius:8px;box-shadow:0 12px 28px #2633230c}.nav-links.open .nav-pages{display:flex;flex-direction:column;align-items:stretch;gap:2px}.nav-pages a{padding:14px 16px;border-radius:5px}.nav-pages a:hover{background:#e6ecdc}}
+@media(max-width:380px){.nav-bar{gap:12px}.nav-bar .wordmark{font-size:14px}}
