@@ -7,6 +7,7 @@ A static React portfolio built with Vite. It has no server or paid service depen
 - `/` — homepage, experience, featured work, writing, and contact
 - `/work/incidentlab/` — IncidentLab case study
 - `/work/agent-workbench/` — Agent Workbench case study
+- `/work/juniper/` — Juniper voice appointment receptionist case study
 - `/writing/` — article index
 - `/writing/why-an-ai-agent-should-not-verify-its-own-repair/`
 - `/writing/designing-an-evidence-backed-incident-workflow/`
@@ -32,7 +33,7 @@ Import this folder as a Vercel project. Vercel should detect Vite automatically.
 
 ## Project media and analytics
 
-Optimized WebP screenshots live in `public/images/incidentlab/` and `public/images/workbench/`. The slideshow advances every 6.5 seconds, pauses while hovered or focused, and supports labelled arrows and slide dots. Automatic advance is disabled when a visitor prefers reduced motion.
+Optimized WebP screenshots live in `public/images/incidentlab/`, `public/images/workbench3/`, and `public/images/juniper/`. The slideshow advances every 6.5 seconds, pauses while hovered or focused, and supports labelled arrows and slide dots. Automatic advance is disabled when a visitor prefers reduced motion.
 
 Vercel Analytics records only career-relevant actions: `email_clicked`, `linkedin_clicked`, `twitter_clicked`, `demo_launched`, `github_opened`, `case_study_opened`, and `case_study_completed`.
 
