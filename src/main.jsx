@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { inject, track as sendAnalyticsEvent } from '@vercel/analytics'
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
 import { LuActivity, LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuX } from 'react-icons/lu'
 import './styles.css'
 import './typography.css'
+import './projects.css'
 
 const GITHUB = 'https://github.com/rajat-blr'
 const LINKEDIN = 'https://www.linkedin.com/in/rajatvarma2709'
@@ -97,7 +98,7 @@ function Home() {
       <div className="hero-summary"><div className="hero-identity"><img src="/images/portrait.webp" alt="Rajat Varma" fetchPriority="high" width="96" height="96" /><div><span className="hero-name">Rajat Varma<span className="period">.</span></span><span className="hero-role">BACKEND SYSTEMS & AI INFRASTRUCTURE</span></div></div><div className="hero-introduction"><p className="hero-description">Senior software engineer at Microsoft, previously at Flipkart. I build backend services and AI-agent infrastructure where correctness, observability and operator control matter.</p><p className="hero-description hero-about">From system architecture to production tooling, I make complex systems easier to understand and operate.</p></div><div className="hero-socials"><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn /> LinkedIn</Link><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub /> GitHub</Link></div></div>
       <div className="hero-footer"><span>BASED IN INDIA · BUILDING FOR EVERYWHERE</span><a href="#work">EXPLORE THE WORK ↓</a></div>
     </section>
-    <section id="work" className="work section-shell"><div className="section-kicker"><span className="kicker-number">01</span><span>SELECTED WORK</span></div><div className="section-heading-row"><h2>Featured projects<span className="period">.</span></h2><p>AI systems built around reliability and operator control.</p></div><div className="project-list"><ProjectCard project={projectData.incidentlab} shots={incidentShots} eyebrow="AI RELIABILITY" lead="AI can propose a diagnosis; it should not decide whether its own repair worked." copy="Evidence stays outside the model, approval is explicit, and deterministic checks verify every proposed change in a sandbox." tags={['React','FastAPI','PostgreSQL','Temporal','OpenTelemetry']} /><ProjectCard project={projectData.workbench} shots={workbenchShots} eyebrow="AGENT EVALUATION" lead="Evaluate coding agents with repeatable tasks and independent checks." copy="Compare models, prompts and reasoning settings on frozen task suites. Inspect results, catch regressions and retain the evidence—all in a local-first app with a built-in coding workspace." tags={['Electron','React','FastAPI','SQLite','Codex CLI']} /><ProjectCard project={projectData.juniper} shots={juniperShots} eyebrow="VOICE AI" lead="Book and reschedule appointments through a natural conversation." copy="An interruptible voice receptionist checks real availability, confirms exact details before writing and restores saved progress across reconnects. A form offers another way to book." tags={['TypeScript','Python','LiveKit','Fastify','PostgreSQL']} /></div></section>
+    <section id="work" className="work section-shell"><div className="section-kicker"><span className="kicker-number">01</span><span>SELECTED WORK</span></div><div className="section-heading-row"><h2>Featured projects<span className="period">.</span></h2><p>AI systems built around reliability and operator control.</p></div><ProjectCarousel><ProjectCard project={projectData.incidentlab} shots={incidentShots} eyebrow="AI RELIABILITY" lead="AI can propose a diagnosis; it should not decide whether its own repair worked." copy="Evidence stays outside the model, approval is explicit, and deterministic checks verify every proposed change in a sandbox." tags={['React','FastAPI','PostgreSQL','Temporal','OpenTelemetry']} /><ProjectCard project={projectData.workbench} shots={workbenchShots} eyebrow="AGENT EVALUATION" lead="Evaluate coding agents with repeatable tasks and independent checks." copy="Compare models, prompts and reasoning settings on frozen task suites. Inspect results, catch regressions and retain the evidence—all in a local-first app with a built-in coding workspace." tags={['Electron','React','FastAPI','SQLite','Codex CLI']} /><ProjectCard project={projectData.juniper} shots={juniperShots} eyebrow="VOICE AI" lead="Book and reschedule appointments through a natural conversation." copy="An interruptible voice receptionist checks real availability, confirms exact details before writing and restores saved progress across reconnects. A form offers another way to book." tags={['TypeScript','Python','LiveKit','Fastify','PostgreSQL']} /></ProjectCarousel></section>
     <section id="experience" className="experience section-shell" aria-labelledby="experience-heading"><div className="section-kicker"><span className="kicker-number">02</span><span>EXPERIENCE</span></div><div className="experience-layout"><div className="experience-intro"><h2 id="experience-heading">Where I’ve <span>built & grown.</span></h2><p>Ownership across backend systems, AI-agent infrastructure and high-scale commerce.</p></div><div className="experience-timeline"><Experience current company="Microsoft" dates="Mar 2025 — Present" location="India · Hybrid" progression={[{title:'Senior Software Engineer',dates:'Jan 2026 — Present'},{title:'Software Engineer',dates:'Mar 2025 — Jan 2026'}]}><li>Lead the design of a microservice responsible for agent orchestration at scale, with agent observability built into the operating model.</li><li>Developed complex RAG and context pipelines, then optimised them to improve agent performance and efficiency.</li><li>Built a search agent now running in production and collaborate across teams on performance, reliability and user experience.</li></Experience><Experience company="Flipkart" dates="Jun 2022 — Mar 2025" location="Bengaluru, Karnataka · Hybrid" progression={[{title:'Software Development Engineer II',dates:'Jun 2023 — Mar 2025'},{title:'Software Development Engineer',dates:'Jun 2022 — Jun 2023'}]}><li>Improved reliability for Big Billion Days traffic, helping services sustain peak events serving millions of requests.</li><li>Maintained and optimised a payment backend service under strict latency and correctness constraints.</li><li>Built a RAG pipeline for user data and metrics that made production behaviour easier to investigate through improved data observability.</li></Experience></div></div></section>
     <section id="expertise" className="expertise section-shell" aria-labelledby="toolkit-heading"><div className="section-kicker"><span className="kicker-number">03</span><span>WHAT I DO</span></div><div className="section-heading-row"><h2 id="toolkit-heading">My toolkit<span className="period">.</span></h2></div><div className="expertise-grid">{[
       {title:'Full Stack Engineering', icon:LuPanelsTopLeft, skills:['React','Python','FastAPI','Go']},
@@ -109,10 +110,52 @@ function Home() {
     <Contact />
   </main><Footer /></>
 }
+function ProjectCarousel({ children }) {
+  const [active, setActive] = useState(0)
+  const rail = useRef(null)
+  const activeSlide = useRef(0)
+  const goTo = index => {
+    const container = rail.current
+    const slide = container.children[index]
+    container.scrollTo({
+      left: slide.offsetLeft - container.offsetLeft,
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    })
+  }
+  const syncActive = () => {
+    const container = rail.current
+    const nearest = Array.from(container.children).reduce((best, slide, index, slides) =>
+      Math.abs(slide.offsetLeft - container.offsetLeft - container.scrollLeft) <
+      Math.abs(slides[best].offsetLeft - container.offsetLeft - container.scrollLeft) ? index : best, 0)
+    activeSlide.current = nearest
+    setActive(nearest)
+  }
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      const container = rail.current
+      container.scrollTo({ left: container.children[activeSlide.current].offsetLeft - container.offsetLeft, behavior: 'instant' })
+    })
+    observer.observe(rail.current)
+    return () => observer.disconnect()
+  }, [])
+  return <div className="project-carousel" role="region" aria-roledescription="carousel" aria-label="Featured projects">
+    <div className="project-selectors" aria-label="Choose a project">
+      {children.map((child, index) => <button key={child.props.project.name} type="button" aria-current={active === index ? 'true' : undefined} aria-controls="project-rail" onClick={() => goTo(index)}><span className="project-selector-number">0{index + 1}</span><span>{child.props.project.name}</span><LuArrowUpRight aria-hidden="true" /></button>)}
+    </div>
+    <div id="project-rail" className="project-rail" ref={rail} onScroll={syncActive} tabIndex={0} aria-label="Project slides. Use left and right arrow keys to browse." onKeyDown={event => {
+      if (event.target !== event.currentTarget) return
+      const next = { ArrowLeft: Math.max(0, active - 1), ArrowRight: Math.min(children.length - 1, active + 1), Home: 0, End: children.length - 1 }[event.key]
+      if (next !== undefined) { event.preventDefault(); goTo(next) }
+    }}>
+      {children.map((child, index) => <div className="project-slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${children.length}: ${child.props.project.name}`} key={child.props.project.name}>{child}</div>)}
+    </div>
+    <div className="project-carousel-footer"><span className="project-position" aria-live="polite" aria-atomic="true"><strong>0{active + 1}</strong><span aria-hidden="true"> / </span><span className="sr-only">of </span>0{children.length}</span><span className="project-browse-hint">Explore the projects</span><div className="project-carousel-arrows"><button type="button" aria-label="Previous project" aria-controls="project-rail" disabled={active === 0} onClick={() => goTo(active - 1)}><LuArrowLeft /></button><button type="button" aria-label="Next project" aria-controls="project-rail" disabled={active === children.length - 1} onClick={() => goTo(active + 1)}><LuArrowRight /></button></div></div>
+  </div>
+}
 function ProjectCard({ project, shots, eyebrow, lead, copy, tags }) {
   return <article className="project-card">
     <header className="project-card-heading"><h3>{project.name}<span>.</span></h3><div className="project-meta"><span>{eyebrow}</span><span>2026</span></div></header>
-    <ProjectVisual shots={shots} name={project.name} />
+    <Link className="project-cover" event="case_study_opened" detail={{ project: project.name }} href={project.path} aria-label={`Explore ${project.name} case study`}><img src={shots[0][0]} alt={shots[0][2]} loading="lazy" decoding="async" /><span className="project-cover-caption"><span>{shots[0][1]}</span><span>Explore project <LuArrowUpRight /></span></span></Link>
     <p className="project-lead">{lead}</p><div className="project-copy"><p>{copy}</p></div>
     <footer className="project-card-footer"><div className="project-tags">{tags.map(t=><span key={t}>{t}</span>)}</div><div className="project-actions"><Link className="button button-lime" event="case_study_opened" detail={{ project: project.name }} href={project.path}>Case study <Arrow /></Link>{project.demo && <Link className="underlined-link" event="demo_launched" detail={{ project: project.name }} href={project.demo} target="_blank" rel="noreferrer">Live demo <Arrow up /></Link>}<Link className="underlined-link" event="github_opened" detail={{ project: project.name }} href={project.repo} target="_blank" rel="noreferrer">GitHub <Arrow up /></Link></div></footer>
   </article>
