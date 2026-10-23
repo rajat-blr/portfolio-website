@@ -6,6 +6,8 @@ import { LuActivity, LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuDownloa
 import './styles.css'
 import './typography.css'
 import './projects.css'
+import './reading.css'
+import { articles } from './articles'
 
 const GITHUB = 'https://github.com/rajat-blr'
 const LINKEDIN = 'https://www.linkedin.com/in/rajatvarma2709'
@@ -178,72 +180,123 @@ function Architecture({ workbench = false }) {
     <div className="graph-boundary graph-trust-boundary"><span className="graph-boundary-label">INDEPENDENT VERIFICATION BOUNDARY</span><div className="graph-row graph-row-final"><GraphNode eyebrow="SEPARATE SERVICE" accent>Trusted verifier</GraphNode><GraphArrow label="fixed checks"/><GraphNode eyebrow="NETWORK DISABLED">Docker sandbox</GraphNode></div></div>
   </div>
 }
-function Metadata({ project }) { return <dl className="metadata-grid">{[['Status',project.status],['Latest release',project.release],['Platforms',project.platforms],['Licence',project.licence],['Last meaningful update',project.updated]].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}<div><dt>Repository</dt><dd><Link event="github_opened" detail={{ project: project.name }} href={project.repo} target="_blank" rel="noreferrer">GitHub ↗</Link></dd></div></dl> }
-function CaseSection({ label, title, children }) { return <section className="case-section section-shell"><div className="case-section-label">{label}</div><div className="case-prose">{title&&<h2>{title}</h2>}{children}</div></section> }
-function CaseStudy({ type }) {
-  const incident = type==='incidentlab', p=projectData[type]
-  useEffect(()=>{const el=document.querySelector('[data-complete]');if(!el)return;const o=new IntersectionObserver(([e])=>{if(e.isIntersecting)track('case_study_completed',{project:p.name})},{threshold:.8});o.observe(el);return()=>o.disconnect()},[p.name])
-  return <><Header/><main id="top" className="case-study"><section className="case-hero section-shell"><a className="back-link" href="/#work"><LuArrowLeft/> Featured work</a><span className="eyebrow">CASE STUDY · 2026</span><h1>{p.name}<span className="period">.</span></h1><p>{incident?'An evidence-backed incident investigation and repair-verification system.':'A local-first evaluation lab for coding agents. Compare configurations on repeatable tasks, independently grade outcomes and inspect the evidence.'}</p><div className="case-actions"><Link className="button button-dark" event="demo_launched" detail={{project:p.name}} href={p.demo} target="_blank" rel="noreferrer">Try demo <Arrow up/></Link><Link className="underlined-link" event="github_opened" detail={{project:p.name}} href={p.repo} target="_blank" rel="noreferrer">Read source <Arrow up/></Link><a className="underlined-link" href="#architecture">View architecture <Arrow/></a>{incident&&<><a className="underlined-link" href={`${p.repo}/blob/main/docs/threat-model.md`} target="_blank" rel="noreferrer">Read threat model <Arrow up/></a></>}</div></section>
-    <CaseSection label="01 · PROBLEM" title={incident?'Plausible is not the same as proven.':'Did the agent actually get better?'}><p>{incident?'AI systems can generate plausible diagnoses and repairs without sufficient evidence or independent verification. In incident response, an uncited explanation or self-certified patch can turn uncertainty into action.':'Changing a model, prompt or reasoning setting can improve one task and break another. Without repeatable inputs and independent checks, it is hard to tell whether an agent actually improved.'}</p></CaseSection>
-    <CaseSection label="02 · PROPOSED SOLUTION" title={incident?'Separate explanation from authority.':'Repeatable evals. Inspectable evidence.'}><p>{incident?'IncidentLab collects evidence, requires cited diagnosis and human approval, applies deterministic repair policy, and verifies candidates in a sandbox. The model proposes; controls outside the model decide.':'Evals lab compares immutable configuration snapshots on frozen task suites, with isolated worktrees, independent grading and retained evidence. A companion coding workspace keeps Codex conversations, codebase maps and per-run diffs together.'}</p></CaseSection>
-    <section id="architecture"><CaseSection label="03 · ARCHITECTURE" title="Boundaries you can reason about."><Architecture workbench={!incident}/><p>{incident?'React presents the review surface. FastAPI and PostgreSQL own state; Temporal makes the workflow durable. Model adapters receive bounded context, while a separate verifier owns sandbox execution.':'Electron starts the local FastAPI backend. React sends authenticated JSON-RPC requests and receives live events over WebSocket. FastAPI manages Codex processes, disposable eval worktrees and scoring; SQLite and local artifacts retain history and evidence.'}</p></CaseSection></section>
-    {incident?<IncidentSections/>:<WorkbenchSections/>}
-    <CaseSection label={`${incident?'08':'07'} · PROJECT FACTS`}><Metadata project={p}/><div className="case-end" data-complete><Link className="button button-dark" event="demo_launched" detail={{project:p.name}} href={p.demo} target="_blank" rel="noreferrer">Open project <Arrow up/></Link></div></CaseSection>
-  </main><Footer/></>
+function CaseSection({ title, children, complete = false }) {
+  return <section className="case-section section-shell" data-complete={complete || undefined}><div className="case-prose"><h2>{title}</h2>{children}</div></section>
 }
-function Decisions({ items }) { return <div className="decision-grid">{items.map((x,i)=><article key={x}><span>0{i+1}</span><h3>{x}</h3></article>)}</div> }
-function JuniperCaseStudy() {
-  const p = projectData.juniper
+function CaseHeader({ project, description }) {
+  return <header className="case-hero section-shell"><a className="back-link" href="/#work"><LuArrowLeft /> All projects</a><p className="reading-byline">Rajat Varma · Engineering notes</p><h1>{project.name}</h1><p>{description}</p><div className="case-actions"><Link event="demo_launched" detail={{ project: project.name }} href={project.demo} target="_blank" rel="noreferrer">Demo <Arrow up /></Link><Link event="github_opened" detail={{ project: project.name }} href={project.repo} target="_blank" rel="noreferrer">Source <Arrow up /></Link><a href="#architecture">Architecture ↓</a></div></header>
+}
+function useCaseCompletion(name) {
   useEffect(() => {
     const el = document.querySelector('[data-complete]')
     if (!el) return
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) track('case_study_completed', { project: p.name })
+      if (entry.isIntersecting) {
+        track('case_study_completed', { project: name })
+        observer.disconnect()
+      }
     }, { threshold: .8 })
     observer.observe(el)
     return () => observer.disconnect()
-  }, [p.name])
+  }, [name])
+}
+function CaseStudy({ type }) {
+  const incident = type === 'incidentlab', project = projectData[type]
+  useCaseCompletion(project.name)
   return <><Header /><main id="top" className="case-study">
-    <section className="case-hero section-shell"><a className="back-link" href="/#work"><LuArrowLeft /> Featured work</a><span className="eyebrow">CASE STUDY · 2026</span><h1>Juniper<span className="period">.</span></h1><p>A voice receptionist for booking and rescheduling appointments, with explicit confirmation, durable progress and duplicate-safe writes.</p><div className="case-actions"><Link className="button button-dark" event="demo_launched" detail={{ project: p.name }} href={p.demo} target="_blank" rel="noreferrer">Try demo <Arrow up /></Link><Link className="button button-dark" event="github_opened" detail={{ project: p.name }} href={p.repo} target="_blank" rel="noreferrer">Read source <Arrow up /></Link><a className="underlined-link" href="#architecture">View architecture <Arrow /></a></div></section>
-    <CaseSection label="01 · PROBLEM" title="A conversation can change before a booking should."><p>People interrupt, correct a date and reconnect halfway through a request. A voice receptionist needs to handle that uncertainty without booking a stale selection, creating a duplicate appointment or losing a confirmed result.</p></CaseSection>
-    <CaseSection label="02 · EXPERIENCE" title="Speak naturally. Confirm deliberately."><p>Juniper checks availability, offers appointment times and reviews the exact details before a booking or move. Live transcripts make the conversation visible; a form offers the same booking workflow without speaking. Saved progress lets a visitor resume after a refresh or reconnect.</p><ProjectVisual shots={juniperShots} name={p.name} /></CaseSection>
-    <section id="architecture"><CaseSection label="03 · ARCHITECTURE" title="Conversation and commitment have separate owners.">
+    <CaseHeader project={project} description={incident ? 'An incident investigation workflow that separates model-generated diagnoses from approval, repair policy and verification.' : 'A local desktop app for comparing coding-agent configurations on repeatable tasks and inspecting the resulting changes.'} />
+    <CaseSection title="Problem">
+      <p>{incident ? 'An incident diagnosis can sound convincing while being wrong. A generated patch can address the proposed cause without fixing the observed failure. If the model also decides whether its repair succeeded, the workflow has no independent check on either claim.' : 'A model or prompt change can fix one task and regress another. Comparing a few chat responses misses changes in repository state, tool execution and failure recovery. I built Agent Workbench to compare complete agent configurations against the same tasks and retain the evidence needed to investigate a result.'}</p>
+      <p>{incident ? 'I built IncidentLab around three separate decisions: what the evidence supports, whether a proposed change may proceed, and whether the change passes fixed checks. Each decision has an owner outside the model.' : 'The app combines an evaluation lab with a coding workspace. The evaluation lab runs controlled comparisons; the workspace keeps conversations, live output, codebase maps and per-run Git diffs together.'}</p>
+    </CaseSection>
+    <section id="architecture"><CaseSection title="Architecture">
+      <p>{incident ? 'React provides the review interface. FastAPI and PostgreSQL hold application state and evidence; Temporal coordinates the durable workflow. Model adapters receive bounded context and return proposals. A separate verifier runs the approved candidate in a sandbox.' : 'Electron starts a local FastAPI backend. React uses authenticated JSON-RPC for requests and WebSocket for live events. FastAPI manages Codex processes, evaluation worktrees and scoring. SQLite stores history; local artifacts retain traces, diffs and grader output.'}</p>
+      <Architecture workbench={!incident} />
+      <p>{incident ? 'The model cannot approve a repair or author its verification status. Human approval, deterministic policy checks and verifier results govern progression through the workflow.' : 'Each evaluation attempt uses a disposable Git worktree. The sequence is setup, agent execution, diff capture, independent scoring and cleanup. The suite and configuration snapshots identify the inputs used for that attempt.'}</p>
+    </CaseSection></section>
+    {incident ? <IncidentSections /> : <WorkbenchSections />}
+  </main><Footer /></>
+}
+function JuniperCaseStudy() {
+  const project = projectData.juniper
+  useCaseCompletion(project.name)
+  return <><Header /><main id="top" className="case-study">
+    <CaseHeader project={project} description="A voice receptionist for booking and rescheduling appointments. The booking API owns confirmation, conflict checks and writes; the voice agent handles the conversation." />
+    <CaseSection title="Problem">
+      <p>A caller can interrupt, correct a date or reconnect before a request finishes. The system needs to distinguish an appointment being discussed from one the caller has confirmed, and a write that failed from a write whose response was lost.</p>
+      <p>Juniper checks availability, reviews the exact booking details and asks for confirmation before writing. Live transcripts expose the conversation state. A browser form uses the same booking workflow, and saved progress lets a visitor resume after a refresh or reconnect.</p>
+    </CaseSection>
+    <section id="architecture"><CaseSection title="Architecture">
+      <p>A Python worker runs the speech and model pipeline through LiveKit Agents. The TypeScript browser connects to the LiveKit room. Agent tools and the browser form call a shared Fastify API, which owns booking rules and persistence in PostgreSQL.</p>
       <figure className="system-graph" role="img" aria-label="Juniper architecture: a TypeScript browser connects through LiveKit to a Python voice agent. The agent calls a Fastify booking API, which validates confirmation and stores sessions, operations and appointments in PostgreSQL. The browser form uses the same API.">
         <div className="graph-boundary"><span className="graph-boundary-label">VOICE CONVERSATION</span><div className="graph-row"><GraphNode eyebrow="MICROPHONE & TRANSCRIPTS">TypeScript browser</GraphNode><GraphArrow label="real-time audio" /><GraphNode eyebrow="ROOM CONNECTION" accent>LiveKit</GraphNode><GraphArrow label="speech · model · voice" /><GraphNode eyebrow="AVAILABILITY & BOOKING TOOLS">Python agent</GraphNode></div></div>
         <GraphArrow down label="agent tools and browser form use the same booking API" />
         <div className="graph-boundary graph-control-boundary"><span className="graph-boundary-label">BOOKING AUTHORITY</span><div className="graph-row graph-row-final"><GraphNode eyebrow="CONFIRMATION & VALIDATION" accent>Fastify API</GraphNode><GraphArrow label="transactional writes" /><GraphNode eyebrow="SESSIONS · OPERATIONS · APPOINTMENTS">PostgreSQL</GraphNode></div><div className="graph-protocol">Exact details → explicit confirmation → operation ID → committed reference</div></div>
-      </figure><p>The Python worker runs the speech and model pipeline through LiveKit Agents. Fastify owns booking rules and persistence, using embedded PostgreSQL locally or an external PostgreSQL database. Both voice tools and the browser form go through this API.</p>
+      </figure>
+      <p>The conversation can request a booking, but it does not bypass API validation. Keeping both interfaces on the same API makes confirmation and conflict rules independent of how a request arrives.</p>
     </CaseSection></section>
-    <CaseSection label="04 · IMPORTANT DECISIONS"><Decisions items={['Exact details require explicit confirmation','Corrections invalidate stale selections','Operation IDs make retries duplicate-safe','Database constraints prevent overlapping appointments','Reconnect restores durable booking progress']} /></CaseSection>
-    <CaseSection label="05 · TESTING & EVIDENCE" title="Check the booking invariant. Measure the conversation."><p>The repository includes automated checks for confirmation, retries after a lost response, slot conflicts, stale selections, session expiry and recovery. Its demo protocol separates automated checks from observed live voice scenarios.</p><p>The initial voice observations cover greeting, dialogue and a confirmed booking, with interruption reported by the tester. Full live rescheduling and recovery verification remain outstanding. The initial reply estimates missed the latency goals; they are exploratory measurements rather than a controlled benchmark.</p><a className="underlined-link" href={`${p.repo}/blob/main/QUALITY.md`} target="_blank" rel="noreferrer">Read quality observations <Arrow up /></a></CaseSection>
-    <CaseSection label="06 · AVAILABILITY" title="A working demo with a clear setup."><p>The browser demo is publicly available; the screenshots show the local interface. Running voice locally requires LiveKit credentials and a Python worker; the booking form provides an alternative when voice is unavailable. The studio is fictional, and the app does not record raw audio.</p><a className="underlined-link" href={`${p.repo}/blob/main/DEPLOYMENT.md`} target="_blank" rel="noreferrer">Deployment & configuration <Arrow up /></a></CaseSection>
-    <CaseSection label="07 · PROJECT FACTS"><Metadata project={p} /><div className="case-end" data-complete><Link className="button button-dark" event="demo_launched" detail={{ project: p.name }} href={p.demo} target="_blank" rel="noreferrer">Open Juniper <Arrow up /></Link></div></CaseSection>
+    <CaseSection title="Confirmation, retries and recovery">
+      <ul>
+        <li><strong>Confirm exact details.</strong> A correction invalidates the previous selection. Confirmation must apply to the details that will be written.</li>
+        <li><strong>Identify operations.</strong> Operation IDs make a retry after a lost response duplicate-safe. Repeating the request must not create a second appointment.</li>
+        <li><strong>Enforce conflicts in storage.</strong> Database constraints prevent overlapping appointments; a conversational availability check alone cannot protect a concurrent write.</li>
+        <li><strong>Persist progress.</strong> Reconnecting restores durable booking state so the caller can recover a confirmed result.</li>
+      </ul>
+    </CaseSection>
+    <CaseSection title="Interface"><p>The screenshots show the local voice and form interface.</p><ProjectVisual shots={juniperShots} name={project.name} /></CaseSection>
+    <CaseSection title="Validation and remaining work">
+      <p>The repository includes automated checks for confirmation, retries after a lost response, slot conflicts, stale selections, session expiry and recovery. These checks cover booking behavior. They do not establish the quality of a live voice conversation.</p>
+      <p>Initial live observations cover greeting, dialogue and a confirmed booking; the tester also reported interruption behavior. Full live rescheduling and recovery verification remain outstanding. Initial reply estimates missed the latency goals and were exploratory observations, rather than a controlled benchmark.</p>
+      <p><a href={`${project.repo}/blob/main/QUALITY.md`} target="_blank" rel="noreferrer">Quality observations and test scope ↗</a></p>
+    </CaseSection>
+    <CaseSection title="Running the demo" complete>
+      <p>The public browser demo is available from the link above. Running voice locally requires LiveKit credentials and a Python worker; the form provides an alternative when voice is unavailable. Local storage uses embedded PostgreSQL, with an external PostgreSQL database also supported. The studio is fictional, and the app does not record raw audio.</p>
+      <p><a href={`${project.repo}/blob/main/DEPLOYMENT.md`} target="_blank" rel="noreferrer">Deployment and configuration ↗</a></p>
+    </CaseSection>
   </main><Footer /></>
 }
-function IncidentSections(){return <><CaseSection label="04 · IMPORTANT DECISIONS"><Decisions items={['Evidence remains outside the model','Repair requires human approval','Policy checks fail closed','Verification runs independently','Missing evidence remains explicit']}/></CaseSection><CaseSection label="05 · DEMO BOUNDARY" title="A useful demo with an honest boundary."><p>The deployed browser demo uses curated saved investigation data and guided replays; it requires no account, backend or API key. The full local system runs the backend workflow, telemetry stack, model integration and sandboxed verifier through Docker Compose.</p></CaseSection><CaseSection label="06 · TESTING & EVALUATION" title="Success is only one possible result."><ul><li><strong>Scenarios:</strong> database pool exhaustion and inventory underflow.</li><li><strong>Checks:</strong> baseline reproduction, compilation, static analysis, unit and integration tests, and repeated incident replay.</li><li><strong>Outcomes:</strong> successful, failed, inconclusive, closed and cancelled remain distinct.</li><li><strong>Restrictions:</strong> non-root, network-disabled containers with resource limits; the model worker never receives the Docker socket.</li></ul></CaseSection><CaseSection label="07 · TRADEOFFS" title="Controlled scenarios, not production theatre."><p>This is a portfolio and educational system, not a hardened production incident-response platform. Its sandbox should not be treated as a security boundary for arbitrary untrusted repositories.</p></CaseSection></>}
-function WorkbenchSections(){return <>
-  <CaseSection label="04 · IN THE APP" title="Evaluate first. Investigate the result."><div className="decision-grid"><article><span>EVALS LAB</span><h3>Run the same tasks. Inspect the difference.</h3><p>Publish cases, freeze suites and compare model, reasoning and instruction configurations with retained traces and grader results.</p></article><article><span>CHAT WORKSPACE</span><h3>Keep context. Review changes.</h3><p>Persistent sessions, live output, interactive codebase maps and per-run Git diffs. Accept or revert explicitly.</p></article></div><ProjectVisual shots={workbenchEvalShots} name="Evals lab"/></CaseSection>
-  <CaseSection label="05 · EVALUATION" title="Evidence behind every result."><ul><li><strong>Repeatable inputs:</strong> pinned Git baselines, immutable cases and configuration snapshots, frozen suites and disposable worktrees.</li><li><strong>Independent checks:</strong> command graders, file assertions and diff constraints; held-out verifiers appear after agent execution.</li><li><strong>Useful comparisons:</strong> per-case regressions, pass rates with evaluable denominators and confidence intervals, phase timings and available token usage.</li><li><strong>Inspectable attempts:</strong> ordered events, source diffs, scorer output and raw traces. Retries preserve earlier evidence.</li></ul><p>The five-case T3 Code comparisons are inconclusive. A small suite is a regression signal, not a broad model ranking.</p><a className="underlined-link" href="/writing/why-agent-evals-matter/">Why agent evals matter <Arrow/></a></CaseSection>
-  <CaseSection label="06 · AVAILABILITY" title="Local data. Clear release scope."><p>The current source build includes Evals lab; the downloadable v1 macOS Apple Silicon app predates it. The browser eval demo uses synthetic, read-only results.</p><p>History and artifacts stay on your computer. Codex CLI is installed separately and may contact OpenAI services. There is no cloud sync, and nothing is committed or pushed automatically.</p><a className="underlined-link" href={`${projectData.workbench.repo}#install-and-start`} target="_blank" rel="noreferrer">Installation & source-build instructions <Arrow up/></a></CaseSection>
-</>}
-
-
-const articles={
- 'why-agent-evals-matter': {title:'Why agent evals matter', dek:'A better answer is easy to notice. A more reliable agent takes evidence. Here is how to measure the difference.', evals:true, sections:[
- ['An eval makes success explicit', 'An evaluation gives an agent a task, defines the starting conditions and checks the result against a success criterion. For a coding agent, “the explanation sounds right” is a weak criterion. “The bug is fixed, existing behavior still works and the patch stays within scope” is something a team can verify. Evals turn a product expectation into a repeatable engineering check.'],
- ['Evaluate the whole agent', 'The model is only one input. Instructions, tools, context, reasoning settings and execution permissions all shape behavior. A model upgrade can improve one workflow while a prompt change breaks another. Evaluate the configuration your users actually run. Separate outcome checks from trace inspection: the final repository tells you whether the task worked; the trace helps explain how it got there.'],
- ['Start with failures you recognize', 'For a coding tool, begin with a small set of real bugs and routine changes: a validation edge case, a recovery path, a concurrency bug or an edit that must preserve an existing API. State what the task permits and what must remain true. Validate setup commands and graders before comparing agents. An ambiguous prompt or a broken dependency can make the evaluation itself the source of failure.'],
- ['Build comparisons on stable inputs', 'Pin the repository baseline, publish the task revision and freeze the suite. Record the model, reasoning effort, instructions and execution policy. Run each attempt in a fresh worktree so earlier edits cannot influence the next result. Change one input when you want to attribute an improvement; if several inputs change, treat the result as a comparison of complete configurations.'],
- ['Let independent checks decide', 'Use executable tests for behavior, file assertions for required artifacts and diff constraints for scope. Check that the original bug is reproduced and that the candidate fixes it without breaking related behavior. Keep verification separate from the agent’s own claim of completion. Held-out checks reduce direct exposure to the grader, but they do not make an execution environment a hardened security boundary.'],
- ['Read the denominator before the percentage', 'Suppose a hypothetical experiment schedules ten attempts: six pass, two fail, one times out and one cannot start. The functional result is six passes out of eight evaluable attempts, alongside a timeout and a setup error. It is not an unqualified 75% success rate. Report completion and operational outcomes too, so excluding unavailable evidence cannot hide an unreliable workflow. Missing token usage should remain unknown rather than becoming zero.'],
- ['Repeat runs and inspect regressions', 'One successful attempt establishes possibility, not reliability. Repeat cases under the same conditions and compare configurations on the same tasks. Look at which cases improve and which regress before trusting an aggregate score. Report uncertainty and avoid treating repeated attempts on one case as independent evidence about many kinds of work. A narrow suite supports a narrow conclusion.'],
- ['Measure efficiency alongside correctness', 'Track agent execution time separately from setup and scoring. Record available token usage and apply documented pricing only when estimating cost. A slower configuration may be worthwhile if it solves difficult cases more consistently; a faster one may suit routine work. Keep timeouts, machine conditions and concurrency visible so infrastructure noise does not masquerade as a model difference.'],
- ['Keep the evidence, then close the loop', 'Retain the configuration, task version, source diff, grader output, ordered events and raw trace for each attempt. A retry should create another record. Review failures, repair faulty graders and add confirmed user failures to the regression suite. Run it before shipping meaningful agent changes, and keep production feedback alongside it: offline coverage can never represent every user task.'],
- ['How this shapes Agent Workbench', 'Agent Workbench puts this loop in a local Evals lab: immutable cases, frozen suites, configuration snapshots, disposable worktrees and independent scoring. Its T3 Code comparisons remain inconclusive. That is a valid result: the purpose of an eval is to support the decision the evidence allows, including the decision to gather more evidence.']
- ]},
- 'why-an-ai-agent-should-not-verify-its-own-repair':{title:'Why an AI agent should not verify its own repair',dek:'Generation and verification share failure modes. Reliable systems separate them.',sections:[['The conflict of interest is architectural','A model that proposes a repair has already committed to a hypothesis. Asking the same model, with the same context, whether the patch works creates correlated confidence—not independent evidence.'],['A verifier needs different authority','Generation may read evidence and produce a bounded diff. Verification executes fixed checks against a pinned baseline: reproduce, apply, compile, analyse, test, replay and store results as facts.'],['Design for inconclusive outcomes','A failed test is useful. Missing signals are useful too. IncidentLab keeps failed and inconclusive outcomes separate and makes evidence gaps visible.']]},
- 'designing-an-evidence-backed-incident-workflow':{title:'Designing an evidence-backed incident investigation workflow',dek:'A practical architecture for moving from telemetry to a verified repair without turning model output into truth.',sections:[['Collect before explaining','The workflow first reproduces the incident and stores attributable traces, metrics, logs and pinned source. Diagnosis comes later, so every claim has stable evidence to cite.'],['Make approval a boundary','A prompt that says “wait for approval” is not an approval system. The workflow persists a checkpoint and cannot enter repair generation until a human decision changes state.'],['Fail closed, then verify independently','A candidate becomes a deterministic unified diff. Path, size, secret, syntax and clean-application rules run before sandbox execution. Independent checks derive the final state.']]}
+function IncidentSections() {
+  return <>
+    <CaseSection title="Evidence and repair controls">
+      <p>Evidence stays outside the model. Diagnoses cite stored observations, and missing evidence remains visible rather than being filled in by the generated explanation. Human approval is a persisted workflow checkpoint before repair generation.</p>
+      <p>A proposed repair then passes deterministic policy checks. Policy failure blocks execution. Verification runs separately and derives its result from recorded checks, so an explanation of why a patch should work cannot turn into a successful repair status.</p>
+    </CaseSection>
+    <CaseSection title="Validation">
+      <p>The scenarios cover database pool exhaustion and inventory underflow. The verification sequence includes baseline reproduction, compilation, static analysis, unit and integration tests, and repeated incident replay.</p>
+      <p>Successful, failed and inconclusive results remain distinct; closed and cancelled runs are also recorded separately. A missing result is insufficient evidence of success, even if the proposed diagnosis appears reasonable.</p>
+      <p>Checks execute in non-root, network-disabled containers with resource limits. The model worker never receives the Docker socket. The sandbox is intended for the controlled scenarios in this project and should not be treated as a security boundary for arbitrary untrusted repositories.</p>
+      <p><a href={`${projectData.incidentlab.repo}/blob/main/docs/threat-model.md`} target="_blank" rel="noreferrer">Threat model ↗</a></p>
+    </CaseSection>
+    <CaseSection title="Demo scope and limitations" complete>
+      <p>The deployed browser demo uses saved investigation data and guided replays. It needs no account, backend or API key. It demonstrates the review workflow; it does not run a live investigation.</p>
+      <p>The full local system runs the backend workflow, telemetry stack, model integration and sandboxed verifier through Docker Compose. This is an educational implementation with controlled incident scenarios, rather than a hardened production incident-response service.</p>
+    </CaseSection>
+  </>
 }
+function WorkbenchSections() {
+  return <>
+    <CaseSection title="Evaluation design">
+      <p>Cases identify a pinned Git baseline and a task revision. Published cases, frozen suites and immutable configuration snapshots keep the inputs stable across attempts. A fresh worktree prevents one attempt’s edits from affecting the next.</p>
+      <p>Command graders, file assertions and diff constraints check the outcome independently of the agent’s completion message. Held-out verifiers are introduced after execution. Each attempt retains ordered events, source changes, scorer output and raw traces; a retry preserves the earlier attempt’s evidence.</p>
+      <p>The comparison view shows per-case regressions, pass rates with evaluable denominators and confidence intervals, phase timings and available token usage. These details help distinguish a task failure from a setup or execution problem.</p>
+      <ProjectVisual shots={workbenchEvalShots} name="Evals lab" />
+    </CaseSection>
+    <CaseSection title="Interpreting results">
+      <p>The five-case T3 Code comparisons are inconclusive. A suite this small can expose a regression on a known task, but it cannot support a broad model ranking. Repeating a case improves the estimate for that case; it does not increase coverage of different types of work.</p>
+      <p>The browser evaluation demo uses synthetic, read-only results. It demonstrates how to inspect a comparison, rather than reporting a live benchmark.</p>
+      <p><a href="/writing/why-agent-evals-matter/">Evaluation methodology →</a></p>
+    </CaseSection>
+    <CaseSection title="Coding workspace">
+      <p>The companion workspace keeps persistent Codex sessions, live output, interactive codebase maps and per-run Git diffs. Changes are reviewed and accepted or reverted explicitly. The app does not automatically commit or push them.</p>
+    </CaseSection>
+    <CaseSection title="Availability and data" complete>
+      <p>The current source build includes Evals lab. The downloadable v1 macOS Apple Silicon app predates it, so building from source is required for the evaluation features.</p>
+      <p>History and artifacts stay on the local machine, with no cloud sync. Codex CLI is installed separately and may contact OpenAI services during execution.</p>
+      <p><a href={`${projectData.workbench.repo}#install-and-start`} target="_blank" rel="noreferrer">Installation and source-build instructions ↗</a></p>
+    </CaseSection>
+  </>
+}
+
 function EvalArchitecture(){return <figure className="system-graph eval-graph" role="img" aria-label="Evaluation architecture: a frozen task suite and configuration snapshots feed an experiment queue. Each attempt sets up a disposable Git worktree, runs the agent, captures the diff and runs independent graders. Evidence is retained for paired comparisons before cleanup.">
   <div className="graph-boundary"><span className="graph-boundary-label">VERSIONED INPUTS</span><div className="graph-row"><GraphNode eyebrow="PINNED BASELINES">Frozen task suite</GraphNode><GraphArrow label="same tasks"/><GraphNode eyebrow="PREFLIGHT" accent>Experiment queue</GraphNode><GraphArrow label="inputs" reverse/><GraphNode eyebrow="MODEL · INSTRUCTIONS · POLICY">Configuration snapshots</GraphNode></div></div>
   <GraphArrow down label="fresh environment for every attempt"/>
@@ -251,8 +304,19 @@ function EvalArchitecture(){return <figure className="system-graph eval-graph" r
   <GraphArrow down label="persist evidence before cleanup"/>
   <div className="graph-boundary"><span className="graph-boundary-label">DECISION & FEEDBACK</span><div className="graph-row graph-row-final"><GraphNode eyebrow="TRACES · DIFFS · RESULTS">Attempt evidence</GraphNode><GraphArrow label="analyze"/><GraphNode eyebrow="REGRESSIONS · UNCERTAINTY" accent>Paired comparison</GraphNode></div><div className="graph-protocol">Review failures → improve cases or configuration → run the suite again</div></div>
 </figure>}
-function WritingIndex(){return <><Header/><main id="top"><section className="page-hero section-shell"><span className="eyebrow">WRITING</span><h1>Notes from<br/><em>the work.</em></h1><p>Practical opinions on reliable AI systems, evidence and developer tooling.</p></section><section className="writing-list section-shell"><ArticleCard slug="why-agent-evals-matter" title="Why agent evals matter" description="Measure task outcomes, catch regressions and compare agent configurations with evidence." /><ArticleCard slug="why-an-ai-agent-should-not-verify-its-own-repair" title={articles['why-an-ai-agent-should-not-verify-its-own-repair'].title} description={articles['why-an-ai-agent-should-not-verify-its-own-repair'].dek}/><ArticleCard slug="designing-an-evidence-backed-incident-workflow" title={articles['designing-an-evidence-backed-incident-workflow'].title} description={articles['designing-an-evidence-backed-incident-workflow'].dek}/></section></main><Footer/></>}
-function Article({slug}){const a=articles[slug];if(!a)return <NotFound/>;return <><Header/><main id="top"><article className="longform section-shell"><a className="back-link" href="/writing/"><LuArrowLeft/> All writing</a><header><span className="eyebrow">AI RELIABILITY</span><h1>{a.title}</h1><p>{a.dek}</p></header>{a.evals ? <EvalArchitecture/> : <Architecture/>}{a.sections.map(([t,b])=><section key={t}><h2>{t}</h2><p>{b}</p></section>)}{!a.evals && <pre><code>{`candidate = policy.validate(model_proposal)\nresult = verifier.run(candidate, network="none")\nstatus = derive_state(result.checks)  # never model-authored`}</code></pre>}{a.evals && <section className="article-sources"><h2>Further reading</h2><p>For grader design and repeated trials, see <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" target="_blank" rel="noreferrer">Anthropic’s guide to agent evals</a>. Product capabilities and comparison limits are documented in the <a href="https://github.com/rajat-blr/agent-workbench#evals-lab" target="_blank" rel="noreferrer">Agent Workbench README</a>.</p></section>}<aside><p>{a.evals ? "Explore the Evals lab and compare coding-agent configurations in Agent Workbench." : "See the complete implementation and trust boundaries in IncidentLab."}</p><a className="button button-dark" href={a.evals ? "/work/agent-workbench/" : "/work/incidentlab/"}>Read the case study <Arrow/></a></aside></article></main><Footer/></>}
+function WritingIndex() {
+  return <><Header /><main id="top"><header className="page-hero section-shell"><h1>Writing</h1><p>Notes on agent evaluation, repair verification and incident workflows.</p></header><section className="writing-list section-shell" aria-label="Articles">{Object.entries(articles).map(([slug, article]) => <ArticleCard key={slug} slug={slug} title={article.title} description={article.dek} />)}</section></main><Footer /></>
+}
+function Article({ slug }) {
+  const article = articles[slug]
+  if (!article) return <NotFound />
+  return <><Header /><main id="top"><article className="longform section-shell">
+    <a className="back-link" href="/writing/"><LuArrowLeft /> All writing</a>
+    <header><p className="reading-byline">Rajat Varma · {article.evals ? 'Agent evaluation' : 'AI reliability'}</p><h1>{article.title}</h1><p>{article.dek}</p></header>
+    {article.sections.map(([title, paragraphs], index) => <section key={title}><h2>{title}</h2>{paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}{index === 1 && <figure className="article-diagram">{article.evals ? <EvalArchitecture /> : <Architecture />}<figcaption>{article.evals ? 'Evaluation lifecycle: version the inputs, isolate each attempt and retain evidence before cleanup.' : 'IncidentLab: the model proposes a repair; workflow controls and the verifier govern execution and results.'}</figcaption></figure>}</section>)}
+    <footer className="article-references"><h2>Implementation</h2><p>{article.evals ? <><a href="/work/agent-workbench/">Agent Workbench case study</a> · <a href="https://github.com/rajat-blr/agent-workbench#evals-lab" target="_blank" rel="noreferrer">Source and setup ↗</a></> : <><a href="/work/incidentlab/">IncidentLab case study</a> · <a href="https://github.com/rajat-blr/incidentlab" target="_blank" rel="noreferrer">Source ↗</a></>}</p></footer>
+  </article></main><Footer /></>
+}
 function NotFound(){return <><Header/><main className="not-found section-shell"><h1>Page not found<span className="period">.</span></h1><a className="button button-dark" href="/">Return home <Arrow/></a></main><Footer/></>}
 export function App({path}){const p=path||(typeof window!=='undefined'?location.pathname:'/');if(p==='/'||p==='/index.html')return <Home/>;if(p.startsWith('/work/incidentlab'))return <CaseStudy type="incidentlab"/>;if(p.startsWith('/work/agent-workbench'))return <CaseStudy type="workbench"/>;if(p==='/work/juniper'||p==='/work/juniper/')return <JuniperCaseStudy/>;if(p==='/writing'||p==='/writing/')return <WritingIndex/>;if(p.startsWith('/writing/'))return <Article slug={p.split('/').filter(Boolean)[1]}/>;return <NotFound/>}
 if(typeof document!=='undefined'){if(!['localhost','127.0.0.1'].includes(location.hostname))inject();const root=document.getElementById('root');if(root.hasChildNodes())hydrateRoot(root,<App/>);else createRoot(root).render(<App/>)}

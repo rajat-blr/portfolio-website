@@ -41,4 +41,4 @@ Optimized WebP screenshots live in `public/images/incidentlab/`, `public/images/
 
 Vercel Analytics records only career-relevant actions: `resume_downloaded`, `email_clicked`, `linkedin_clicked`, `twitter_clicked`, `demo_launched`, `github_opened`, `case_study_opened`, and `case_study_completed`.
 
-Content, links, and routes are in `src/main.jsx`; colors and layout are in `src/styles.css`; route metadata and structured data are in `scripts/prerender.mjs`.
+Pages, links, and routes are in `src/main.jsx`; article text is in `src/articles.js`. Shared styles are in `src/styles.css`, reading layouts in `src/reading.css`, and the project carousel in `src/projects.css`. Route metadata and structured data are in `scripts/prerender.mjs`.

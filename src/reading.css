@@ -1,0 +1,93 @@
+/* Reading pages share a restrained document layout. */
+.case-study { padding-bottom: 80px; }
+.case-study .section-shell,
+.longform.section-shell,
+.page-hero.section-shell,
+.writing-list.section-shell { width: calc(100% - 48px); max-width: 800px; margin-inline: auto; padding-inline: 0; }
+.case-study .case-hero,
+.longform.section-shell { padding-top: 56px; }
+.case-study .case-hero { padding-bottom: 32px; }
+.case-study .back-link,
+.longform .back-link { margin-bottom: 32px; font-size: 13px; font-weight: 400; }
+.reading-byline,
+.longform header .reading-byline,
+.case-hero .reading-byline { font-size: 12px; line-height: 1.6; color: #6a7167; margin: 0 0 12px; letter-spacing: 0; }
+.case-study .case-hero h1,
+.longform header h1,
+.page-hero h1 { font-size: clamp(30px, 4vw, 42px); font-weight: 600; letter-spacing: -.035em; line-height: 1.2; margin: 0 0 18px; }
+.case-study .case-hero > p:not(.reading-byline),
+.longform header > p:not(.reading-byline),
+.page-hero > p { font-size: 17px; line-height: 1.7; color: #596254; margin: 0; max-width: none; }
+.case-study .case-actions { flex-direction: row; align-items: center; gap: 24px; margin-top: 20px; font-size: 13px; }
+.case-actions a { display: inline-flex; gap: 6px; align-items: center; }
+.case-study .case-section { display: block; padding-block: 24px; border: 0; }
+.case-prose { max-width: none; }
+.case-study .case-prose h2,
+.longform > section h2,
+.longform .article-references h2 { font-size: 22px; font-weight: 600; line-height: 1.4; letter-spacing: -.02em; margin: 0 0 14px; }
+.case-study .case-prose p,
+.case-study .case-prose li,
+.longform > section p { font-size: 16px; font-weight: 400; line-height: 1.8; letter-spacing: 0; color: #3e473b; max-width: none; }
+.case-prose p,
+.longform > section p { margin: 0 0 16px; }
+.case-prose p:last-child,
+.longform > section p:last-child { margin-bottom: 0; }
+.case-prose ul { padding-left: 22px; margin: 0; }
+.case-prose li + li { margin-top: 12px; }
+.case-prose strong { font-weight: 600; }
+.case-prose p a,
+.article-references a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #abb6a1; }
+.case-actions a:hover,
+.case-prose a:hover,
+.article-references a:hover { color: #526b30; }
+.longform.section-shell { padding-bottom: 80px; }
+.longform header { margin-bottom: 36px; }
+.longform > section { margin: 32px 0; }
+.article-diagram { margin: 28px 0 0; }
+.article-diagram > .system-graph { margin: 0; }
+.article-diagram figcaption { font-size: 12px; line-height: 1.65; color: #6a7167; margin-top: 14px; }
+.case-study .system-graph,
+.longform .system-graph { margin-block: 30px; }
+.article-diagram > .system-graph { margin-top: 0; }
+.case-study .graph-boundary,
+.longform .graph-boundary { border-radius: 4px; background: #f5f6f2; box-shadow: none; }
+.case-study .graph-boundary-label,
+.longform .graph-boundary-label { background: #f5f6f2; font-size: 9px; letter-spacing: .04em; }
+.case-study .graph-node,
+.longform .graph-node { border-radius: 3px; box-shadow: none; }
+.case-study .graph-node-accent,
+.longform .graph-node-accent { background: #e6eddc; border-color: #aab99a; }
+.case-study .graph-node > span,
+.longform .graph-node > span { font-size: 9px; letter-spacing: .025em; }
+.case-study .graph-arrow span,
+.longform .graph-arrow span { font-size: 9px; }
+.case-study .graph-protocol,
+.longform .graph-protocol { border-radius: 0; background: transparent; font-size: 10px; letter-spacing: 0; }
+.case-study .graph-trust-boundary,
+.longform .graph-trust-boundary { background: #eef1e8; color: #263027; border-color: #aab99a; }
+.case-study .graph-trust-boundary .graph-boundary-label,
+.longform .graph-trust-boundary .graph-boundary-label { background: #eef1e8; color: #50633e; }
+.case-study .graph-trust-boundary .graph-node:not(.graph-node-accent),
+.longform .graph-trust-boundary .graph-node:not(.graph-node-accent) { background: #fff; color: #263027; border-color: #cbd6c2; }
+.case-study .case-prose > .project-visual { border-radius: 4px; margin-block: 24px 0; }
+.article-references { margin-top: 40px; padding-top: 24px; border-top: 1px solid #dce2d6; }
+.article-references p { font-size: 14px; line-height: 1.8; margin: 0; }
+.page-hero.section-shell { padding-top: 56px; padding-bottom: 32px; }
+.writing-list.section-shell { display: block; padding-bottom: 80px; }
+.writing-list .article-card { min-height: 0; padding: 24px 0; border: 0; border-top: 1px solid #dce2d6; }
+.writing-list .article-card-meta { display: none; }
+.writing-list .article-card h3 { font-size: 22px; font-weight: 600; line-height: 1.4; letter-spacing: -.02em; margin: 0 0 10px; }
+.writing-list .article-card p { max-width: none; margin: 0 0 14px; font-size: 16px; }
+.writing-list .article-card .underlined-link { border: 0; padding: 0; font-weight: 400; }
+.case-study a:focus-visible,
+.longform a:focus-visible { outline: 2px solid #748f3b; outline-offset: 4px; }
+@media (max-width: 700px) {
+  .case-study .case-hero,
+  .longform.section-shell,
+  .page-hero.section-shell { padding-top: 32px; }
+  .case-study .case-section { padding-block: 20px; }
+  .case-study .case-prose h2,
+  .longform > section h2 { font-size: 21px; }
+  .case-study .graph-boundary-label,
+  .longform .graph-boundary-label { font-size: 8px; letter-spacing: .025em; }
+}
