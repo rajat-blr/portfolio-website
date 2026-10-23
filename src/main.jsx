@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { inject, track as sendAnalyticsEvent } from '@vercel/analytics'
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
-import { LuActivity, LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuDownload, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuX } from 'react-icons/lu'
+import { LuActivity, LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuDatabase, LuDownload, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuX } from 'react-icons/lu'
 import './styles.css'
 import './typography.css'
 import './projects.css'
@@ -108,6 +108,7 @@ function Home() {
       {title:'DevOps', icon:LuServer, skills:['Kubernetes','Containerization','Orchestration','CI/CD']},
       {title:'Monitoring & Observability', icon:LuActivity, skills:['Prometheus','Grafana']},
       {title:'AI Agent Infrastructure', icon:LuBot, skills:['Evals','LLMOps','Sandboxing','Guardrails']},
+      {title:'Data & Messaging', icon:LuDatabase, skills:['Redis','Kafka']},
     ].map(({title,icon:Icon,skills},i)=><article className={`expertise-card toolkit-card${i===3?' expertise-card-accent':''}`} key={title}><div className="toolkit-card-top"><span className="skill-symbol" aria-hidden="true"><Icon /></span><span className="card-index">0{i+1}</span></div><h3>{title}</h3><div className="skill-tags">{skills.map(skill=><span key={skill}>{skill}</span>)}</div></article>)}</div></section>
     <section id="writing" className="writing-preview section-shell" aria-labelledby="writing-heading"><div className="section-kicker"><span className="kicker-number">04</span><span>WRITING</span></div><div className="section-heading-row"><h2 id="writing-heading">Notes from the work<span className="period">.</span></h2><a className="underlined-link" href="/writing/">View all writing <Arrow /></a></div><div className="article-grid"><ArticleCard slug="why-agent-evals-matter" title="Why agent evals matter" description="Measure task outcomes, catch regressions and compare agent configurations with evidence." /><ArticleCard slug="why-an-ai-agent-should-not-verify-its-own-repair" title="Why an AI agent should not verify its own repair" description="Generation and verification fail differently. The architecture should acknowledge that." /><ArticleCard slug="designing-an-evidence-backed-incident-workflow" title="Designing an evidence-backed incident investigation workflow" description="A practical workflow for citations, approval, fail-closed policy and independent checks." /></div></section>
     <Contact />
