@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { inject, track as sendAnalyticsEvent } from '@vercel/analytics'
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
-import { LuActivity, LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuX } from 'react-icons/lu'
+import { LuActivity, LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBot, LuDownload, LuMail, LuMenu, LuPanelsTopLeft, LuServer, LuX } from 'react-icons/lu'
 import './styles.css'
 import './typography.css'
 import './projects.css'
@@ -11,6 +11,7 @@ const GITHUB = 'https://github.com/rajat-blr'
 const LINKEDIN = 'https://www.linkedin.com/in/rajatvarma2709'
 const TWITTER = 'https://x.com/rajat_2709'
 const EMAIL = 'vrajatlink@gmail.com'
+const RESUME = '/Rajat_Varma_Resume.pdf'
 const CALENDLY = 'https://calendly.com/vrajatlink/30min'
 const projectData = {
   incidentlab: { name: 'IncidentLab', repo: `${GITHUB}/incidentlab`, demo: 'https://incidentlab-flax.vercel.app/runs', path: '/work/incidentlab/', status: 'Educational / experimental', release: 'v0.2.0', platforms: 'Browser demo · Docker locally', licence: 'Not declared', updated: '30 Sep 2026' },
@@ -85,7 +86,7 @@ function Contact() {
   return <section id="contact" className="contact section-shell" aria-labelledby="contact-heading">
     <div className="section-kicker"><span className="kicker-number">05</span><span>LET'S CONNECT</span></div>
     <div className="contact-booking-layout">
-      <div className="contact-message"><h2 id="contact-heading">Your next project.<br />Let’s build it together<span className="period">.</span></h2><p>Open to remote senior engineering roles and contract engagements in AI infrastructure, backend systems, observability, and LLMOps. Flexible across time zones and comfortable collaborating with globally distributed teams.</p><div className="contact-profile-links"><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub />GitHub</Link><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn />LinkedIn</Link><Link event="twitter_clicked" href={TWITTER} target="_blank" rel="noreferrer"><FaXTwitter />X / Twitter</Link></div></div>
+      <div className="contact-message"><h2 id="contact-heading">Your next project.<br />Let’s build it together<span className="period">.</span></h2><p>Open to remote senior engineering roles and contract engagements in AI infrastructure, backend systems, observability, and LLMOps. Flexible across time zones and comfortable collaborating with globally distributed teams.</p><div className="contact-profile-links"><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub />GitHub</Link><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn />LinkedIn</Link><Link event="twitter_clicked" href={TWITTER} target="_blank" rel="noreferrer"><FaXTwitter />X / Twitter</Link><Link event="resume_downloaded" href={RESUME} download><LuDownload aria-hidden="true" />Résumé (PDF)</Link></div></div>
       <div className="booking-card"><div className="booking-card-top"><span className="booking-status"><span />LET’S TALK</span><span className="booking-duration">30 MIN</span></div><h3>A conversation to<br />get things started.</h3><p>Pick a time that works for you.<br />See available slots on Calendly.</p><Link className="booking-button" event="booking_clicked" href={CALENDLY} target="_blank" rel="noopener noreferrer">Book a call <LuArrowUpRight /></Link><div className="booking-email"><span>Prefer email?</span><Link event="email_clicked" href={`mailto:${EMAIL}`}><LuMail />{EMAIL}<LuArrowUpRight /></Link></div></div>
     </div>
   </section>
@@ -94,7 +95,7 @@ function Contact() {
 function Home() {
   return <><Header home /><main id="top">
     <section className="hero section-shell" aria-labelledby="hero-heading">
-      <div className="hero-copy"><div className="eyebrow"><span className="hero-status" aria-hidden="true" />SENIOR SOFTWARE ENGINEER · 5 YEARS EXPERIENCE</div><h1 id="hero-heading" className="hero-statement">I build AI agents<br />and make them <em>trustworthy:</em><br />observable and verifiable.</h1><div className="hero-actions"><a className="button button-dark" href="#work">View featured work <Arrow up /></a><Link className="button button-quiet" event="email_clicked" href={`mailto:${EMAIL}`}>Contact me <Arrow /></Link></div></div>
+      <div className="hero-copy"><div className="eyebrow"><span className="hero-status" aria-hidden="true" />SENIOR SOFTWARE ENGINEER · 5 YEARS EXPERIENCE</div><h1 id="hero-heading" className="hero-statement">I build AI agents<br />and make them <em>trustworthy:</em><br />observable and verifiable.</h1><div className="hero-actions"><a className="button button-dark" href="#work">View featured work <Arrow up /></a><Link className="button button-quiet" event="resume_downloaded" href={RESUME} download>Download résumé <LuDownload aria-hidden="true" /></Link></div></div>
       <div className="hero-summary"><div className="hero-identity"><img src="/images/portrait.webp" alt="Rajat Varma" fetchPriority="high" width="96" height="96" /><div><span className="hero-name">Rajat Varma<span className="period">.</span></span><span className="hero-role">BACKEND SYSTEMS & AI INFRASTRUCTURE</span></div></div><div className="hero-introduction"><p className="hero-description">Senior software engineer at Microsoft, previously at Flipkart. I build backend services and AI-agent infrastructure where correctness, observability and operator control matter.</p><p className="hero-description hero-about">From system architecture to production tooling, I make complex systems easier to understand and operate.</p></div><div className="hero-socials"><Link event="linkedin_clicked" href={LINKEDIN} target="_blank" rel="noreferrer"><FaLinkedinIn /> LinkedIn</Link><Link event="github_opened" detail={{ project: 'profile' }} href={GITHUB} target="_blank" rel="noreferrer"><FaGithub /> GitHub</Link></div></div>
       <div className="hero-footer"><span>BASED IN INDIA · BUILDING FOR EVERYWHERE</span><a href="#work">EXPLORE THE WORK ↓</a></div>
     </section>
