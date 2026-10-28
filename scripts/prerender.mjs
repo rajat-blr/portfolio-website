@@ -13,6 +13,7 @@ const pages = [
   { path: '/', title: 'Rajat Varma — Senior Software Engineer', description: 'Senior software engineer at Microsoft, previously at Flipkart, building reliable AI infrastructure, backend systems, observability and developer tooling.', type: 'profile' },
   { path: '/work/incidentlab/', title: 'IncidentLab case study — Rajat Varma', description: 'How IncidentLab separates evidence, human approval, repair policy and independent sandbox verification in an AI-assisted incident workflow.', type: 'article' },
   { path: '/work/agent-workbench/', title: 'Agent Workbench case study — Rajat Varma', description: 'A local-first evaluation lab for coding agents, with reproducible task suites, independent grading and evidence-backed configuration comparisons.', type: 'article' },
+  { path: '/work/llm-gateway/', title: 'LLM Gateway case study — Rajat Varma', description: 'An OpenAI-compatible Go gateway with controlled access, bounded streaming, shared token admission, resilient provider routing and usage observability.', type: 'article' },
   { path: '/work/juniper/', title: 'Juniper case study — Rajat Varma', description: 'A voice AI receptionist for appointment booking and rescheduling, with explicit confirmation, durable conversation recovery and duplicate-safe writes.', type: 'article' },
   { path: '/writing/why-agent-evals-matter/', title: 'Why agent evals matter — Rajat Varma', description: 'How reproducible tasks, independent graders and retained evidence help teams measure agent performance and catch regressions.', type: 'article' },
   { path: '/writing/', title: 'Writing — Rajat Varma', description: 'Practical writing about reliable AI systems, independent verification, evidence-backed incident response and developer tooling.', type: 'website' },
@@ -25,7 +26,7 @@ const software = (name, url, category, operatingSystem) => ({ '@context': 'https
 for (const page of pages) {
   const canonical = `${siteUrl}${page.path}`
   const image = `${siteUrl}/images/og-card.png`
-  const schema = page.path === '/' ? person : page.path.includes('incidentlab') ? software('IncidentLab', canonical, 'DeveloperApplication', 'Web, Docker') : page.path.includes('agent-workbench') ? software('Agent Workbench', canonical, 'DeveloperApplication', 'macOS') : page.path === '/work/juniper/' ? software('Juniper', canonical, 'BusinessApplication', 'Web') : { '@context': 'https://schema.org', '@type': 'Article', headline: page.title, author: { '@type': 'Person', name: 'Rajat Varma' }, url: canonical }
+  const schema = page.path === '/' ? person : page.path.includes('incidentlab') ? software('IncidentLab', canonical, 'DeveloperApplication', 'Web, Docker') : page.path.includes('agent-workbench') ? software('Agent Workbench', canonical, 'DeveloperApplication', 'macOS') : page.path === '/work/llm-gateway/' ? software('LLM Gateway', canonical, 'DeveloperApplication', 'Docker') : page.path === '/work/juniper/' ? software('Juniper', canonical, 'BusinessApplication', 'Web') : { '@context': 'https://schema.org', '@type': 'Article', headline: page.title, author: { '@type': 'Person', name: 'Rajat Varma' }, url: canonical }
   const metadata = `
     <link rel="canonical" href="${canonical}" />
     <meta property="og:title" content="${page.title}" />
