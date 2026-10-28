@@ -79,7 +79,7 @@ c.setAuthor('Rajat Varma')
 c.setSubject('Backend systems, AI infrastructure and selected engineering projects')
 y = H - 24
 styles = {
-    'body': ParagraphStyle('body', fontName='Cambria', fontSize=9.7, leading=12.7, textColor=colors.black),
+    'body': ParagraphStyle('body', fontName='Cambria', fontSize=9.7, leading=14, textColor=colors.black),
     'contact': ParagraphStyle('contact', fontName='Cambria', fontSize=9.2, leading=12.2, textColor=colors.black),
     'name': ParagraphStyle('name', fontName='Cambria-Bold', fontSize=20, leading=24),
     'role': ParagraphStyle('role', fontName='Cambria', fontSize=15, leading=19),
@@ -97,7 +97,7 @@ def para(markup, style='body', indent=0, gap=2):
 
 def section(title):
     global y
-    y -= 9
+    y -= 13
     c.setLineWidth(1.25)
     c.line(L, y - 7, L + 112, y - 7)
     p = Paragraph(bold(title.upper()), styles['section'])
@@ -141,7 +141,7 @@ para(bold('Software Engineer | Microsoft ') + italic('(Mar 2025 - Jan 2026)'), g
 bullet('Lead the design of a microservice for agent orchestration at scale, with observability built into its operating model.')
 bullet('Developed and optimized RAG and context pipelines to improve agent performance and efficiency.')
 bullet('Built a production search agent; collaborate across teams to improve performance, reliability and user experience.')
-y -= 5
+y -= 9
 para(bold('Software Development Engineer II | Flipkart ') + italic('(Jun 2023 - Mar 2025)'), gap=0)
 para(bold('Software Development Engineer | Flipkart ') + italic('(Jun 2022 - Jun 2023)'), gap=4)
 bullet('Improved service reliability for Big Billion Days peak traffic, helping sustain events serving millions of requests.')
@@ -169,7 +169,7 @@ projects = [
 ]
 for i, (name, description, source, bullets, demo) in enumerate(projects):
     if i:
-        y -= 5
+        y -= 9
     heading = bold(name) + text(' - ' + description + ' | ') + link('Source Code', source)
     if demo:
         heading += text(' | ') + link('Live demo', demo)
@@ -191,10 +191,10 @@ for label, value in [
 section('Education')
 # Keep the reference's table format, using only verified education details.
 rows = [
-    [Paragraph(bold('Degree / Examination'), styles['body']), Paragraph(bold('Institution / Board'), styles['body'])],
-    [Paragraph(text('BTech, Computer Science & Engineering'), styles['body']), Paragraph(text('Ramaiah Institute of Technology, Bengaluru'), styles['body'])],
+    [Paragraph(bold('Year'), styles['body']), Paragraph(bold('Degree / Examination'), styles['body']), Paragraph(bold('Institution / Board'), styles['body']), Paragraph(bold('Grade'), styles['body'])],
+    [Paragraph(text('2021'), styles['body']), Paragraph(text('BTech, Computer Science & Engineering'), styles['body']), Paragraph(text('Ramaiah Institute of Technology, Bengaluru'), styles['body']), Paragraph(text('9.2'), styles['body'])],
 ]
-table = Table(rows, colWidths=[width * .49, width * .51])
+table = Table(rows, colWidths=[width * .10, width * .36, width * .44, width * .10])
 table.setStyle(TableStyle([
     ('GRID', (0, 0), (-1, -1), .6, colors.HexColor('#888888')),
     ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
